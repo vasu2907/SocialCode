@@ -63,6 +63,7 @@ public class Profile extends AppCompatActivity {
                 if(id == R.id.navigation_updateprofile)
                 {
                     Toast.makeText(getApplicationContext(),"Update Profile",Toast.LENGTH_LONG).show();
+                    startActivity( new Intent(getApplicationContext(),UpdateProfile.class));
                 }
                 else if(id == R.id.navigation_upcomingcontests)
                 {
