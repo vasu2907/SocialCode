@@ -88,6 +88,7 @@ public class SplashScreen extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
+
             return null;
         }
     }

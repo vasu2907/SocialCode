@@ -10,9 +10,6 @@
     android:background="#1976d2"
     >
 
-
-
-
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
@@ -86,7 +83,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/profile_codeforces_submission"
+                android:id="@+id/profile_codeforces_friends"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
                 android:layout_above="@+id/profile_codeforces_contest_num"
@@ -94,7 +91,7 @@
                 android:layout_marginLeft="145dp"
                 android:layout_marginEnd="136dp"
                 android:layout_marginBottom="-340dp"
-                android:text="Submission"
+                android:text="Friends"
                 android:gravity="center"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -127,7 +124,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/profile_codeforces_submission_num"
+                android:id="@+id/profile_codeforces_friends_num"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -184,7 +181,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/profile_hackerrank_submission"
+                android:id="@+id/profile_hackerrank_friends"
                 android:layout_width="130dp"
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
@@ -192,7 +189,7 @@
                 android:layout_marginStart="147dp"
                 android:layout_marginTop="420dp"
                 android:gravity="center"
-                android:text="Submission"
+                android:text="Friends"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -223,12 +220,12 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/profile_hackerrank_submission_num"
+                    android:id="@+id/profile_hackerrank_friends_num"
                     android:layout_width="130dp"
                     android:layout_height="40dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginStart="140dp"
+                    android:layout_marginStart="145dp"
                     android:layout_marginBottom="110dp"
                     android:gravity="center"
                     android:text="0"
@@ -241,7 +238,7 @@
                     android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="2dp"
                     android:layout_marginBottom="110dp"
                     android:gravity="center"
                     android:text="0"

@@ -1,9 +1,12 @@
 package com.example.socialcode;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Login extends AppCompatActivity {
     private EditText username,password;
     private Button login;
-    private TextView signup;
+    private Button signup;
     private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class Login extends AppCompatActivity {
         username = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
         login = (Button) findViewById(R.id.login_loginbtn);
-        signup = (TextView) findViewById(R.id.login_signup);
+        signup = (Button) findViewById(R.id.login_signup);
         auth = FirebaseAuth.getInstance();
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +49,6 @@ public class Login extends AppCompatActivity {
                 String action;
                 Intent intent = new Intent(getApplicationContext(),Register.class);
                 startActivity(intent);
-                finish();
             }
         });
     }
