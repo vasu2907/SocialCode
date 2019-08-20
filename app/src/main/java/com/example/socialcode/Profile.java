@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -25,7 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class Profile extends AppCompatActivity {
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
-    private TextView logout;
+    private TextView logout,coderating,codefriends,codecontests;
+    private String codeforcesrating,codeforcesfriends,codeforcescontests;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,17 @@ public class Profile extends AppCompatActivity {
         abdt.setDrawerIndicatorEnabled(true);
         dl.addDrawerListener(abdt);
         abdt.syncState();
+        coderating = (TextView)findViewById(R.id.profile_codeforces_rating_num);
+        codefriends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
+        codecontests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
+        Intent intent = getIntent();
+        codeforcesrating = intent.getStringExtra("rating");
+        codeforcesfriends = intent.getStringExtra("friends");
+        codeforcescontests = intent.getStringExtra("contests");
+        coderating.setText(codeforcesrating);
+        Log.d("Rating","$$$$"+codeforcesrating);
+        codefriends.setText(codeforcesfriends);
+        codecontests.setText(codeforcescontests);
         logout = (TextView) findViewById(R.id.navigation_logout);
 
         logout.setOnClickListener(new View.OnClickListener() {

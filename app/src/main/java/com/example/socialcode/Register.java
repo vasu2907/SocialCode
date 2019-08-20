@@ -143,12 +143,14 @@ public class Register extends AppCompatActivity {
             Hackerrank.requestFocus();
             return;
         }
+        Toast.makeText(getApplicationContext(),"Hey There",Toast.LENGTH_SHORT).show();
         final UserInfo userInfo = new UserInfo(name,college,email,codeforces,codechef,hackerrank);
         auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful())
                 {
+                    Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
                     String Uid = auth.getCurrentUser().getUid();
                     myref.child(Uid).child("Info").setValue(userInfo);
                     myref.child(Uid).child("Friends").setValue(null);
