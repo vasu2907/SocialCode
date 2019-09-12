@@ -80,10 +80,12 @@ public class Profile extends AppCompatActivity {
                 else if(id == R.id.navigation_upcomingcontests)
                 {
                     Toast.makeText(getApplicationContext(),"Upcoming Contests",Toast.LENGTH_LONG).show();
+                    startActivity( new Intent(getApplicationContext(), UpcomingContests.class));
                 }
                 else if(id == R.id.navigation_searchfriend)
                 {
                     Toast.makeText(getApplicationContext(),"Search Friend",Toast.LENGTH_LONG).show();
+                    startActivity( new Intent(getApplicationContext(),SearchFriends.class));
                 }
                 else if(id == R.id.navigation_favourites)
                 {
