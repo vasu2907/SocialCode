@@ -51,6 +51,7 @@ public class UpdateProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Profile");
         Name = (EditText) findViewById(R.id.updateprofile_name);
         College = (EditText) findViewById(R.id.updateprofile_college);
         Codechef = (EditText) findViewById(R.id.updateprofile_codechef);
