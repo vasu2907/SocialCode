@@ -7,11 +7,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +33,14 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setTitle(" Login");
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.setStatusBarColor(getColor(R.color.colorPrimary));
+        }
+        else {
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
         username = (EditText) findViewById(R.id.login_username);
         password = (EditText) findViewById(R.id.login_password);
         login = (Button) findViewById(R.id.login_loginbtn);
@@ -49,6 +59,7 @@ public class Login extends AppCompatActivity {
                 String action;
                 Intent intent = new Intent(getApplicationContext(),Register.class);
                 startActivity(intent);
+                finish();
             }
         });
     }
