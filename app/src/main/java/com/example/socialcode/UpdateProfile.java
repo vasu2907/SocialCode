@@ -59,7 +59,7 @@ public class UpdateProfile extends AppCompatActivity {
             window.setStatusBarColor(getColor(R.color.colorPrimary));
         }
         else {
-//            window.setStatusBarColor(getResources().getColor(R.color.statusbar));
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
         Name = (EditText) findViewById(R.id.updateprofile_name);
         College = (EditText) findViewById(R.id.updateprofile_college);
@@ -167,7 +167,7 @@ public class UpdateProfile extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             Glide.with(getApplicationContext()).load(uri).into(profilepic);
 //                            profileImageurl = uri.toString();
-                            Toast.makeText(getApplicationContext(),uri.toString(),Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(),uri.toString(),Toast.LENGTH_LONG).show();
                         }
                     });
         }catch (Exception e)
@@ -196,7 +196,7 @@ public class UpdateProfile extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     profileImageurl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-                    Toast.makeText(getApplicationContext(),profileImageurl,Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(),profileImageurl,Toast.LENGTH_LONG).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

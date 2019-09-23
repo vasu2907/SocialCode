@@ -1,12 +1,14 @@
 package com.example.socialcode;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -34,6 +36,14 @@ public class UpcomingContests extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upcoming_contests);
+        getSupportActionBar().setTitle("Contests");
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.setStatusBarColor(getColor(R.color.colorPrimary));
+        }
+        else {
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
         recyclerView = (RecyclerView) findViewById(R.id.contest_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

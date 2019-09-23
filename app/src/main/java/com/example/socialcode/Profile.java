@@ -44,7 +44,7 @@ public class Profile extends AppCompatActivity {
             window.setStatusBarColor(getColor(R.color.colorPrimary));
         }
         else {
-//            window.setStatusBarColor(getResources().getColor(R.color.statusbar));
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
         coderating = (TextView)findViewById(R.id.profile_codeforces_rating_num);
         codefriends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
