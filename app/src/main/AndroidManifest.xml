@@ -12,13 +12,13 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FriendProfile"></activity>
         <activity
             android:name=".SearchFriends"
-            android:parentActivityName=".Profile" />
+            android:parentActivityName=".Profile"></activity>
         <activity
             android:name=".UpcomingContests"
             android:parentActivityName=".Profile" />
+        <activity android:name=".FriendProfile" />
         <activity
             android:name=".UpdateProfile"
             android:parentActivityName=".Profile" />
