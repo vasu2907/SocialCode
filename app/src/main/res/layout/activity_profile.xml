@@ -32,6 +32,7 @@
                 android:src="@drawable/coverpic" />
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_profilepic"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:layout_alignParentStart="true"

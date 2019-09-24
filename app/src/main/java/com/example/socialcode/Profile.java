@@ -20,16 +20,26 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Profile extends AppCompatActivity {
+    private ImageView pic;
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
     private TextView logout,coderating,codefriends,codecontests;
     private String codeforcesrating,codeforcesfriends,codeforcescontests;
+    private StorageReference storageReference;
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +56,7 @@ public class Profile extends AppCompatActivity {
         else {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
+        pic = (ImageView) findViewById(R.id.profile_profilepic);
         coderating = (TextView)findViewById(R.id.profile_codeforces_rating_num);
         codefriends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         codecontests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
@@ -57,6 +68,8 @@ public class Profile extends AppCompatActivity {
         Log.d("Rating","$$$$"+codeforcesrating);
         codefriends.setText(codeforcesfriends);
         codecontests.setText(codeforcescontests);
+        storageReference = FirebaseStorage.getInstance().getReference();
+        auth = FirebaseAuth.getInstance();
         logout = (TextView) findViewById(R.id.navigation_logout);
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +120,31 @@ public class Profile extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        try{
+                storageReference.child("profilepics/"+auth.getCurrentUser().getUid()+".jpg")
+                        .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        try{
+                            Glide.with(getApplicationContext())
+                                    .load(uri).into(pic);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return;
+        }
     }
 
     @Override

@@ -49,7 +49,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
         View view = LayoutInflater.from(context).inflate(R.layout.searchfriends_layout,viewGroup,false);
         return new FriendsSearchAdapter.SearchViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull final FriendsSearchAdapter.SearchViewHolder searchViewHolder, int i) {
         searchViewHolder.Name.setText(arrayList.get(i).getName());
