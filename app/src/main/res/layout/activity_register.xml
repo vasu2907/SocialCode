@@ -62,10 +62,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="260dp"
+        android:layout_marginTop="257dp"
         android:ems="10"
-        android:inputType="textPassword"
-        android:hint="Re-enter Password" />
+        android:hint="Re-enter Password"
+        android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/register_codeforces"
@@ -73,11 +73,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="320dp"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="383dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Codeforces Handle" />
+        android:hint="Codeforces Handle"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/register_hackerrank"
@@ -85,11 +85,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="305dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="257dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Hackerrank Handle" />
+        android:hint="Hackerrank Handle"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/register_codechef"
@@ -97,11 +97,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="246dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="142dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Codechef Handle" />
+        android:hint="Codechef Handle"
+        android:inputType="textPersonName" />
 
     <Button
         android:id="@+id/register_register"
@@ -109,8 +109,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginBottom="165dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="78dp"
+        android:layout_marginBottom="66dp"
         android:text="Register" />
 
     <TextView
@@ -119,8 +120,9 @@
         android:layout_height="35dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="129dp"
-        android:layout_marginBottom="123dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="124dp"
+        android:layout_marginBottom="18dp"
         android:text=" Already have an Account?"
         android:textSize="16sp" />
 
@@ -130,8 +132,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="83dp"
-        android:layout_marginBottom="137dp"
+        android:layout_marginEnd="81dp"
+        android:layout_marginBottom="33dp"
         android:text="SignIn"
         android:textColor="#1565c0"
         android:textSize="16sp" />

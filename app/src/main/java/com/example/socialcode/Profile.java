@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -27,8 +28,24 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,6 +57,10 @@ public class Profile extends AppCompatActivity {
     private String codeforcesrating,codeforcesfriends,codeforcescontests;
     private StorageReference storageReference;
     private FirebaseAuth auth;
+    private Intent intent;
+    private DatabaseReference myref;
+    private String rating="";
+    private String codeforces_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +81,17 @@ public class Profile extends AppCompatActivity {
         coderating = (TextView)findViewById(R.id.profile_codeforces_rating_num);
         codefriends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         codecontests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
-        Intent intent = getIntent();
+        intent = getIntent();
         codeforcesrating = intent.getStringExtra("rating");
         codeforcesfriends = intent.getStringExtra("friends");
         codeforcescontests = intent.getStringExtra("contests");
-        coderating.setText(codeforcesrating);
+//        coderating.setText(codeforcesrating);
         Log.d("Rating","$$$$"+codeforcesrating);
-        codefriends.setText(codeforcesfriends);
-        codecontests.setText(codeforcescontests);
+//        codefriends.setText(codeforcesfriends);
+//        codecontests.setText(codeforcescontests);
         storageReference = FirebaseStorage.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
+        myref = FirebaseDatabase.getInstance().getReference("Users");
         logout = (TextView) findViewById(R.id.navigation_logout);
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +109,6 @@ public class Profile extends AppCompatActivity {
                 finish();
             }
         });
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         final NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -125,6 +146,24 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+//        myref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+////                fetchdata process = new fetchdata();
+////
+////                process.execute();
+//                    coderating.setText(intent.getStringExtra("rating"));
+//                    codecontests.setText(intent.getStringExtra("contests"));
+//                    codefriends.setText(intent.getStringExtra("friends"));
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
         try{
                 storageReference.child("profilepics/"+auth.getCurrentUser().getUid()+".jpg")
                         .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -152,4 +191,65 @@ public class Profile extends AppCompatActivity {
 
         return abdt.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
+
+
+    private class fetchdata extends AsyncTask<Void,Void,String>{
+        String res="";
+
+        public fetchdata() {
+            super();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                String status = object.getString("status");
+                if(status.equals("OK")){
+                    JSONArray res = object.getJSONArray("result");
+                    JSONObject mydata = (JSONObject) res.get(0);
+                    rating = mydata.getString("rating");
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),object.getString("comment"),Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                // Appropriate error handling code
+            }
+            coderating.setText(rating);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                Log.d("ID=","####"+codeforces_id);
+                URL url = new URL("http://codeforces.com/api/user.info?handles=+"+codeforces_id);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                try {
+                    InputStream inputStream =urlConnection.getInputStream();
+                    BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
+                    String line="";
+                    String res="";
+                    while (line!=null) {
+                        line = bufferedReader.readLine();
+                        res = res+line;
+                    }
+                    bufferedReader.close();
+                    return res;
+                } finally {
+                    urlConnection.disconnect();
+                }
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
+            }
+        }
+    }
+
 }

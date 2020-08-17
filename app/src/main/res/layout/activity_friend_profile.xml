@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FriendProfile"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start"
+        android:backgroundTint="#1976d2"
+        android:background="@color/colorAccent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="-10dp"
+            android:src="@drawable/coverpic" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_profilepic"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="45dp"
+            app:civ_border_width="5dp"
+            app:civ_border_color="#1976d2"
+            android:src="@drawable/defaultpic" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_floatbtn"
+            android:layout_margin="30dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_code_black_24dp"
+            />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/codeforces"
+            android:layout_marginTop="250dp"
+            android:background="#e0e0e0"/>
+
+        <TextView
+            android:id="@+id/profile_codeforces_rating"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/profile_codeforces_rating_num"
+            android:layout_alignStart="@+id/profile_codeforces_rating_num"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="-340dp"
+            android:gravity="center"
+            android:text="Rating"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_codeforces_friends"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/profile_codeforces_contest_num"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="145dp"
+            android:layout_marginEnd="136dp"
+            android:layout_marginBottom="-340dp"
+            android:text="Friends"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_codeforces_contest"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="299dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="-340dp"
+            android:gravity="center"
+            android:text="Contest"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_codeforces_rating_num"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="332dp"
+            android:gravity="center"
+            android:text="1603"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_codeforces_friends_num"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="332dp"
+            android:layout_marginEnd="135dp"
+            android:gravity="center"
+            android:text="96"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_codeforces_contest_num"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="332dp"
+            android:layout_marginEnd="2dp"
+            android:gravity="center"
+            android:text="25"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/he_logo"
+            android:layout_marginTop="370dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:background="#e0e0e0"/>
+
+        <TextView
+            android:id="@+id/profile_hackerrank_rating"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="420dp"
+            android:gravity="center"
+            android:text="Rating"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_hackerrank_friends"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="147dp"
+            android:layout_marginTop="420dp"
+            android:gravity="center"
+            android:text="Friends"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_hackerrank_contest"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="420dp"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:text="Contest"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_hackerrank_rating_num"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginBottom="110dp"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_hackerrank_friends_num"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="145dp"
+            android:layout_marginBottom="110dp"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/profile_hackerrank_contest_num"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="110dp"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>

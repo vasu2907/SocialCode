@@ -69,10 +69,9 @@ public class SplashScreen extends AppCompatActivity {
 //                                Toast.makeText(getApplicationContext(),"Database",Toast.LENGTH_SHORT).show();
                                 codeforces = userInfo.getCodeforces();
                                 Log.d("Database",codeforces);
-                                fetchdata process = new fetchdata(codeforces);
+                                fetchdata process = new fetchdata();
                                 process.execute();
                             }
-
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -110,33 +109,24 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
     private class fetchdata extends AsyncTask<Void,Void,String> {
-        String result;
 
-        String codeforces,rating,friends,contests;
         public fetchdata()
         {
             super();
 
         }
-        public fetchdata(String a)
-        {
-            this.codeforces = a;
-            this.rating = "0";
-            this.friends = "0";
-            this.contests = "0";
-        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
-
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Intent intent = new Intent(getApplicationContext(),Profile.class);
-            intent.putExtra("rating",rating);
-            intent.putExtra("friends",friends);
-            intent.putExtra("contests",contests);
+//            intent.putExtra("rating",rating);
+//            intent.putExtra("friends",friends);
+//            intent.putExtra("contests",contests);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
@@ -144,76 +134,94 @@ public class SplashScreen extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            try{
+//            try{
+//
+//
+//                //// THIS IS FOR CODEFORCES RATING AND FRIENDS
+//                Log.d("InsideBackgroundId","$$$"+this.codeforces);
+//                URL url = new URL("http://codeforces.com/api/user.info?handles="+this.codeforces+";");
+//                HttpURLConnection httpURLConnection =(HttpURLConnection)url.openConnection();
+//                InputStream inputStream =httpURLConnection.getInputStream();
+//                BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
+//                String line ="";
+//                result = "";
+//                while (line!= null)
+//                {
+//                    line = bufferedReader.readLine();
+//                    result = result + line;
+//                }
+//                Log.d("Hey","$$$$"+result+"$$$");
+//                JSONObject jsonObject = new JSONObject(result);
+//                if(jsonObject.getString("status").equals("OK"))
+//                {
+////                    Toast.makeText(getApplicationContext(),"Valid",Toast.LENGTH_LONG).show();
+//                    Log.d("Valid","Jsonobject");
+//                    JSONArray temp = jsonObject.getJSONArray("result");
+//                    JSONObject c = temp.getJSONObject(0);
+//                     this.rating = c.getString("rating");
+//                     Log.d("Rating","$$$$"+this.rating);
+//                     friends = c.getString("friendOfCount");
+//                     Log.d("Friends","$$$"+friends);
+//                }
+//                else{
+//                    Log.d("Null hia kya","####");
+//                    return null;
+//                }
+//                ////THIS IS FOR CODEFORCES CONTESTS
+//                result = "";
+//                String spec;
+//                URL url1 = new URL("https://codeforces.com/api/user.rating?handle="+this.codeforces);
+//                HttpURLConnection httpURLConnection1 = (HttpsURLConnection) url1.openConnection();
+//                InputStream inputStream1 = httpURLConnection1.getInputStream();
+//                BufferedReader bufferedReader1 = new BufferedReader(new InputStreamReader(inputStream1));
+//                line = "";
+//                while (line!=null)
+//                {
+//                    line = bufferedReader1.readLine();
+//                    result = result + line;
+//                }
+//
+//                JSONObject jsonObject1 = new JSONObject(result);
+//                if(jsonObject1.getString("status").equals("OK"))
+//                {
+//                    JSONArray temp = jsonObject1.getJSONArray("result");
+//                    int l = temp.length();
+//                    contests = String.valueOf(l);
+//                }
+//                else
+//                {
+//                    return null;
+//                }
+//
+//            }catch(MalformedURLException e) {
+//                Log.d("MALFORMED",e.getMessage());
+//            }catch (IOException e){
+//                Log.d("IOEXCEPTION",e.getMessage());
+//            } catch (JSONException e) {
+//                Log.d("VGVtgc","jbtr");
+//                e.printStackTrace();
+//            }
+//            return null;
 
-
-                //// THIS IS FOR CODEFORCES RATING AND FRIENDS
-                Log.d("InsideBackgroundId","$$$"+this.codeforces);
-                URL url = new URL("http://codeforces.com/api/user.info?handles="+this.codeforces+";");
-                HttpURLConnection httpURLConnection =(HttpURLConnection)url.openConnection();
-                InputStream inputStream =httpURLConnection.getInputStream();
-                BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
-                String line ="";
-                result = "";
-                while (line!= null)
-                {
-                    line = bufferedReader.readLine();
-                    result = result + line;
+            try {
+                URL url = new URL("http://codeforces.com/api/user.info?handles="+codeforces);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line).append("\n");
+                    }
+                    bufferedReader.close();
+                    return stringBuilder.toString();
+                } finally {
+                    urlConnection.disconnect();
                 }
-                Log.d("Hey","$$$$"+result+"$$$");
-                JSONObject jsonObject = new JSONObject(result);
-                if(jsonObject.getString("status").equals("OK"))
-                {
-//                    Toast.makeText(getApplicationContext(),"Valid",Toast.LENGTH_LONG).show();
-                    Log.d("Valid","Jsonobject");
-                    JSONArray temp = jsonObject.getJSONArray("result");
-                    JSONObject c = temp.getJSONObject(0);
-                     rating = c.getString("rating");
-                     Log.d("Rating","$$$$"+rating);
-                     friends = c.getString("friendOfCount");
-                     Log.d("Friends","$$$"+friends);
-                }
-                else{
-                    return null;
-                }
-
-
-
-                ////THIS IS FOR CODEFORCES CONTESTS
-
-                result = "";
-                String spec;
-                URL url1 = new URL("https://codeforces.com/api/user.rating?handle="+this.codeforces);
-                HttpURLConnection httpURLConnection1 = (HttpsURLConnection) url1.openConnection();
-                InputStream inputStream1 = httpURLConnection1.getInputStream();
-                BufferedReader bufferedReader1 = new BufferedReader(new InputStreamReader(inputStream1));
-                line = "";
-                while (line!=null)
-                {
-                    line = bufferedReader1.readLine();
-                    result = result + line;
-                }
-
-                JSONObject jsonObject1 = new JSONObject(result);
-                if(jsonObject1.getString("status").equals("OK"))
-                {
-                    JSONArray temp = jsonObject1.getJSONArray("result");
-                    int l = temp.length();
-                    contests = String.valueOf(l);
-                }
-                else
-                {
-                    return null;
-                }
-
-            }catch(MalformedURLException e) {
-                Log.d("MALFORMED",e.getMessage());
-            }catch (IOException e){
-                Log.d("IOEXCEPTION",e.getMessage());
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+                return null;
             }
-            return null;
         }
     }
 }

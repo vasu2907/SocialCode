@@ -146,10 +146,8 @@ public class UpcomingContests extends AppCompatActivity {
     public String getstarttime(int st)
     {
         String res="";
-        Calendar cal = Calendar.getInstance();
-        DateFormat simple = new SimpleDateFormat("dd MMM yyyy HH:mm:ss:SSS Z");
-        Date line = new Date(st*1000);
-        String [] units = String.valueOf(line).split(" ");
+        Date dateTime=new Date((long)st*1000);
+        String [] units = String.valueOf(dateTime).split(" ");
         String[] temp = units[3].split(":");
         res = temp[0]+":"+temp[1];
         return res;
@@ -158,11 +156,9 @@ public class UpcomingContests extends AppCompatActivity {
     public String getstartdate(int st)
     {
         String res="";
-        Calendar cal = Calendar.getInstance();
-        DateFormat simple = new SimpleDateFormat("dd MMM yyyy HH:mm:ss:SSS Z");
-        Date line = new Date(st*1000);
-        String [] units = String.valueOf(line).split(" ");
-        res = units[0]+"/"+units[1]+"/"+units[2];
+        Date dateTime=new Date((long)st*1000);
+        String [] units = String.valueOf(dateTime).split(" ");
+        res = units[1]+" "+units[2]+"\n"+units[0];
         return res;
     }
 }

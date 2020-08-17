@@ -59,7 +59,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         final String id = arrayList.get(i).getId();
         final String d = arrayList.get(i).getDate();
         final String n = arrayList.get(i).getName();
-
         searchViewHolder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -99,6 +99,7 @@ public class Login extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful())
                 {
+
                     SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor =sharedPref.edit();
                     editor.putString("Email",email);

@@ -87,15 +87,16 @@ public class SearchFriends extends AppCompatActivity {
                         String profilepic = uid;
                         String name = userInfo.getName();
                         String email = userInfo.getEmail();
+                        String codeforces_handle = userInfo.getCodeforces();
                         if(name.toLowerCase().contains(searchstring.toLowerCase()))
                         {
-                            FriendsInfo friendsInfo = new FriendsInfo(name,email,profilepic);
+                            FriendsInfo friendsInfo = new FriendsInfo(name,email,profilepic,codeforces_handle);
                             arrayList.add(friendsInfo);
                             counter+=1;
                         }
                         else if(email.toLowerCase().contains(searchstring.toLowerCase()))
                         {
-                            FriendsInfo friendsInfo = new FriendsInfo(name,email,profilepic);
+                            FriendsInfo friendsInfo = new FriendsInfo(name,email,profilepic,codeforces_handle);
                             arrayList.add(friendsInfo);
                             counter+=1;
                         }

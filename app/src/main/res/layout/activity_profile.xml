@@ -10,12 +10,11 @@
     android:background="#1976d2"
     >
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".Profile">
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -54,21 +53,12 @@
                     android:src="@drawable/ic_code_black_24dp"
                     />
 
-            <TextView
-                android:id="@+id/profile_codeforces"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="-3dp"
-                android:layout_marginTop="259dp"
-                android:background="@drawable/rounded_corner"
-                android:gravity="center"
-                android:paddingLeft="15dp"
-                android:paddingTop="2dp"
-                android:text="Codeforces"
-                android:textSize="28sp"
-                android:textStyle="italic" />
+                android:layout_height="50dp"
+                android:src="@drawable/codeforces"
+                android:layout_marginTop="250dp"
+                android:background="#e0e0e0"/>
 
             <TextView
                 android:id="@+id/profile_codeforces_rating"
@@ -120,7 +110,7 @@
                 android:layout_marginStart="3dp"
                 android:layout_marginTop="332dp"
                 android:gravity="center"
-                android:text="0"
+                android:text="1603"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -134,7 +124,7 @@
                 android:layout_marginTop="332dp"
                 android:layout_marginEnd="135dp"
                 android:gravity="center"
-                android:text="0"
+                android:text="96"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -148,25 +138,18 @@
                 android:layout_marginTop="332dp"
                 android:layout_marginEnd="2dp"
                 android:gravity="center"
-                android:text="0"
+                android:text="25"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/profile_hackerrank"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="381dp"
-                android:background="@drawable/rounded_corner"
-                android:gravity="center"
-                android:paddingLeft="15dp"
-                android:paddingTop="2dp"
-                android:text="Hackerrank"
-                android:textSize="28sp"
-                android:textStyle="italic" />
+                android:layout_height="50dp"
+                android:src="@drawable/he_logo"
+                android:layout_marginTop="370dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:background="#e0e0e0"/>
 
             <TextView
                 android:id="@+id/profile_hackerrank_rating"
