@@ -1,9 +1,11 @@
 package com.example.socialcode;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -21,13 +23,35 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+
 public class Register extends AppCompatActivity {
     private EditText Name,College,Email,Password,ReenterPassword,Codechef,Codeforces,Hackerrank;
     private Button Register;
     private TextView signin;
-    private FirebaseAuth auth;
-    private FirebaseDatabase database;
-    private DatabaseReference myref;
+//    private FirebaseAuth auth;
+//    private FirebaseDatabase database;
+//    private DatabaseReference myref;
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
+    private String responseBody;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +66,10 @@ public class Register extends AppCompatActivity {
         Hackerrank = (EditText) findViewById(R.id.register_hackerrank);
         Register = (Button) findViewById(R.id.register_register);
         signin = (TextView) findViewById(R.id.register_signin);
-        auth =FirebaseAuth.getInstance();
-        database =FirebaseDatabase.getInstance();
+//        auth =FirebaseAuth.getInstance();
+//        database =FirebaseDatabase.getInstance();
 
-        myref =database.getReference("Users");
-
+//        myref =database.getReference("Users");
 
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +89,7 @@ public class Register extends AppCompatActivity {
         });
 
     }
+
     private void addUser()
     {
         final String name,college,email,pass,repass,codechef,codeforces,hackerrank;
@@ -143,43 +167,123 @@ public class Register extends AppCompatActivity {
             Hackerrank.requestFocus();
             return;
         }
-        Toast.makeText(getApplicationContext(),"Hey There",Toast.LENGTH_SHORT).show();
-        final UserInfo userInfo = new UserInfo(name,college,email,codeforces,codechef,hackerrank);
-        auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+        RegisterAPIBody body = new RegisterAPIBody(name, email, college, codeforces, codechef, hackerrank);
+        Call<RegisterAPIResponse> call = jsonPlaceHolderApi.registerUserPost(body);
+        call.enqueue(new Callback<RegisterAPIResponse>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
-                    Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
-                    String Uid = auth.getCurrentUser().getUid();
-                    myref.child(Uid).child("Info").setValue(userInfo);
-                    myref.child(Uid).child("Friends").setValue(null);
-                    myref.child(Uid).child("Favourites").setValue(null);
-                    myref.child(Uid).child("Codeforces").setValue(codeforces);
-                    myref.child(Uid).child("Codechef").setValue(codechef);
-                    myref.child(Uid).child("Hackerrank").setValue(hackerrank);
-                    Toast.makeText(getApplicationContext(),"User Registered Successfully",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getApplicationContext(),Login.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+            public void onResponse(Call<RegisterAPIResponse> call, Response<RegisterAPIResponse> response) {
+                if(!response.isSuccessful()) {
+                    responseBody = "Some Error Occurred";
+                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+                    return ;
                 }
-                else
-                {
-                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
-                    {
-                        Toast.makeText(getApplicationContext(),"Email is already Registered",Toast.LENGTH_LONG).show();
-                    }
-                    else if(task.getException() instanceof FirebaseAuthWeakPasswordException)
-                    {
-                        Toast.makeText(getApplicationContext(),"Password is too weak",Toast.LENGTH_LONG).show();
-                    }
-                    else
-                    {
-                        Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
-                    }
-                }
+                RegisterAPIResponse postResponse = response.body();
+                responseBody = postResponse.getMessage();
+                Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<RegisterAPIResponse> call, Throwable t) {
+                responseBody = "Internal Server Error";
+                Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
             }
         });
+
+
+//        final UserInfo userInfo = new UserInfo(name,college,email,codeforces,codechef,hackerrank);
+//        auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if(task.isSuccessful())
+//                {
+//                    Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
+//                    String Uid = auth.getCurrentUser().getUid();
+//                    myref.child(Uid).child("Info").setValue(userInfo);
+//                    myref.child(Uid).child("Friends").setValue(null);
+//                    myref.child(Uid).child("Favourites").setValue(null);
+//                    myref.child(Uid).child("Codeforces").setValue(codeforces);
+//                    myref.child(Uid).child("Codechef").setValue(codechef);
+//                    myref.child(Uid).child("Hackerrank").setValue(hackerrank);
+//                    Toast.makeText(getApplicationContext(),"User Registered Successfully",Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(getApplicationContext(),Login.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//                else
+//                {
+//                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
+//                    {
+//                        Toast.makeText(getApplicationContext(),"Email is already Registered",Toast.LENGTH_LONG).show();
+//                    }
+//                    else if(task.getException() instanceof FirebaseAuthWeakPasswordException)
+//                    {
+//                        Toast.makeText(getApplicationContext(),"Password is too weak",Toast.LENGTH_LONG).show();
+//                    }
+//                    else
+//                    {
+//                        Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            }
+//        });
+
     }
+
+//    class fetchdata extends AsyncTask<Void, Void, String>{
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//        }
+//
+//        @Override
+//        protected String doInBackground(Void... voids) {
+//            try{
+//                URL url = new URL (" https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/register");
+//                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+//                con.setRequestMethod("POST");
+//                con.setRequestProperty("Content-Type", "application/json; utf-8");
+//                con.setRequestProperty("Accept", "application/json");
+//                con.setDoOutput(true);
+//                String data_string = obj.toString();
+//                try(OutputStream os = con.getOutputStream()) {
+//                    byte[] input = data_string.getBytes("utf-8");
+//                    os.write(input, 0, input.length);
+//                }
+//                try(BufferedReader br = new BufferedReader(
+//                        new InputStreamReader(con.getInputStream(), "utf-8"))) {
+//                    StringBuilder response = new StringBuilder();
+//                    String responseLine = null;
+//                    while ((responseLine = br.readLine()) != null) {
+//                        response.append(responseLine.trim());
+//                    }
+//                    System.out.println(response.toString());
+//                    resp = new JSONObject(response.toString());
+//
+//                }
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return "";
+//        }
+//    }
 }
