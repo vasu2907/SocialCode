@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
@@ -24,11 +25,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class Login extends AppCompatActivity {
     private EditText username,password;
     private Button login;
     private Button signup;
-    private FirebaseAuth auth;
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
+    private String responseBody;
+//    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +54,7 @@ public class Login extends AppCompatActivity {
         password = (EditText) findViewById(R.id.login_password);
         login = (Button) findViewById(R.id.login_loginbtn);
         signup = (Button) findViewById(R.id.login_signup);
-        auth = FirebaseAuth.getInstance();
+//        auth = FirebaseAuth.getInstance();
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,33 +97,85 @@ public class Login extends AppCompatActivity {
             password.requestFocus();
             return;
         }
-        if(pass.length()<8)
-        {
-            password.setError("Minimum Password Length is 8");
-            password.requestFocus();
-            return;
-        }
-        auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
+//        if(pass.length()<8)
+//        {
+//            password.setError("Minimum Password Length is 8");
+//            password.requestFocus();
+//            return;
+//        }
 
+        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        LoginAPIBody body = new LoginAPIBody(email, pass);
+        Call<LoginAPIResponse> call = jsonPlaceHolderApi.loginUserPost(body);
+        call.enqueue(new Callback<LoginAPIResponse>() {
+            @Override
+            public void onResponse(Call<LoginAPIResponse> call, Response<LoginAPIResponse> response) {
+                if(!response.isSuccessful()) {
+                    responseBody = "Login Failed";
+                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                LoginAPIResponse postResponse = response.body();
+                responseBody = postResponse.getMessage();
+                if(postResponse.getCredentials() == true) {
+                    responseBody = "Login Successful";
+                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
                     SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor =sharedPref.edit();
                     editor.putString("Email",email);
                     editor.putString("Password",pass);
                     editor.commit();
                     Intent intent = new Intent(getApplicationContext(),Profile.class);
+                    intent.putExtra("rating", postResponse.getCodeforces_rating());
+                    intent.putExtra("friends", postResponse.getCodeforces_friends());
+                    intent.putExtra("contests", postResponse.getCodeforces_contests());
+                    intent.putExtra("name", postResponse.getName());
+                    intent.putExtra("college", postResponse.getCollege());
+                    intent.putExtra("verified", postResponse.getVerified());
+                    intent.putExtra("email", email);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_LONG).show();
+
+                } else {
+                    responseBody = "Login Failed";
+                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
                 }
             }
+
+            @Override
+            public void onFailure(Call<LoginAPIResponse> call, Throwable t) {
+                responseBody = "Some Error Occurred";
+                Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+            }
         });
+
+
+//        auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if(task.isSuccessful())
+//                {
+//
+//                    SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor =sharedPref.edit();
+//                    editor.putString("Email",email);
+//                    editor.putString("Password",pass);
+//                    editor.commit();
+//                    Intent intent = new Intent(getApplicationContext(),Profile.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//                else
+//                {
+//                    Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
     }
 }
