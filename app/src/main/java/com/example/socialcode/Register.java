@@ -1,6 +1,7 @@
 package com.example.socialcode;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
 public class Register extends AppCompatActivity {
     private EditText Name,College,Email,Password,ReenterPassword,Codechef,Codeforces,Hackerrank;
     private Button Register;
@@ -28,6 +42,8 @@ public class Register extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase database;
     private DatabaseReference myref;
+    private JSONObject obj, resp;
+    private String response;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +60,7 @@ public class Register extends AppCompatActivity {
         signin = (TextView) findViewById(R.id.register_signin);
         auth =FirebaseAuth.getInstance();
         database =FirebaseDatabase.getInstance();
+        obj = new JSONObject();
 
         myref =database.getReference("Users");
 
@@ -66,6 +83,7 @@ public class Register extends AppCompatActivity {
         });
 
     }
+
     private void addUser()
     {
         final String name,college,email,pass,repass,codechef,codeforces,hackerrank;
@@ -77,6 +95,17 @@ public class Register extends AppCompatActivity {
         codeforces = Codeforces.getText().toString().trim();
         codechef = Codechef.getText().toString().trim();
         hackerrank = Hackerrank.getText().toString().trim();
+        try {
+            obj.put("name", name);
+            obj.put("college", college);
+            obj.put("email", email);
+            obj.put("password", pass);
+            obj.put("codeforces", codeforces);
+            obj.put("codechef", codechef);
+            obj.put("hackerrank", hackerrank);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
         if(name.isEmpty())
         {
             Name.setError("Enter your Name");
@@ -144,42 +173,90 @@ public class Register extends AppCompatActivity {
             return;
         }
         Toast.makeText(getApplicationContext(),"Hey There",Toast.LENGTH_SHORT).show();
-        final UserInfo userInfo = new UserInfo(name,college,email,codeforces,codechef,hackerrank);
-        auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
-                    Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
-                    String Uid = auth.getCurrentUser().getUid();
-                    myref.child(Uid).child("Info").setValue(userInfo);
-                    myref.child(Uid).child("Friends").setValue(null);
-                    myref.child(Uid).child("Favourites").setValue(null);
-                    myref.child(Uid).child("Codeforces").setValue(codeforces);
-                    myref.child(Uid).child("Codechef").setValue(codechef);
-                    myref.child(Uid).child("Hackerrank").setValue(hackerrank);
-                    Toast.makeText(getApplicationContext(),"User Registered Successfully",Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getApplicationContext(),Login.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+
+//        final UserInfo userInfo = new UserInfo(name,college,email,codeforces,codechef,hackerrank);
+//        auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if(task.isSuccessful())
+//                {
+//                    Toast.makeText(getApplicationContext(),"Inside",Toast.LENGTH_SHORT).show();
+//                    String Uid = auth.getCurrentUser().getUid();
+//                    myref.child(Uid).child("Info").setValue(userInfo);
+//                    myref.child(Uid).child("Friends").setValue(null);
+//                    myref.child(Uid).child("Favourites").setValue(null);
+//                    myref.child(Uid).child("Codeforces").setValue(codeforces);
+//                    myref.child(Uid).child("Codechef").setValue(codechef);
+//                    myref.child(Uid).child("Hackerrank").setValue(hackerrank);
+//                    Toast.makeText(getApplicationContext(),"User Registered Successfully",Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(getApplicationContext(),Login.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//                else
+//                {
+//                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
+//                    {
+//                        Toast.makeText(getApplicationContext(),"Email is already Registered",Toast.LENGTH_LONG).show();
+//                    }
+//                    else if(task.getException() instanceof FirebaseAuthWeakPasswordException)
+//                    {
+//                        Toast.makeText(getApplicationContext(),"Password is too weak",Toast.LENGTH_LONG).show();
+//                    }
+//                    else
+//                    {
+//                        Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            }
+//        });
+
+    }
+
+    class fetchdata extends AsyncTask<Void, Void, String>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try{
+                URL url = new URL (" https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/register");
+                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+                con.setRequestMethod("POST");
+                con.setRequestProperty("Content-Type", "application/json; utf-8");
+                con.setRequestProperty("Accept", "application/json");
+                con.setDoOutput(true);
+                String data_string = obj.toString();
+                try(OutputStream os = con.getOutputStream()) {
+                    byte[] input = data_string.getBytes("utf-8");
+                    os.write(input, 0, input.length);
                 }
-                else
-                {
-                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
-                    {
-                        Toast.makeText(getApplicationContext(),"Email is already Registered",Toast.LENGTH_LONG).show();
+                try(BufferedReader br = new BufferedReader(
+                        new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine = null;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
                     }
-                    else if(task.getException() instanceof FirebaseAuthWeakPasswordException)
-                    {
-                        Toast.makeText(getApplicationContext(),"Password is too weak",Toast.LENGTH_LONG).show();
-                    }
-                    else
-                    {
-                        Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_LONG).show();
-                    }
+                    System.out.println(response.toString());
+                    response = new JSONObject(response.toString());
                 }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        });
+            return "";
+        }
     }
 }
