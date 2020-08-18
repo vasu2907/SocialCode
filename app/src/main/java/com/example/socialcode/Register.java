@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -34,16 +35,23 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class Register extends AppCompatActivity {
     private EditText Name,College,Email,Password,ReenterPassword,Codechef,Codeforces,Hackerrank;
     private Button Register;
     private TextView signin;
-    private FirebaseAuth auth;
-    private FirebaseDatabase database;
-    private DatabaseReference myref;
-    private JSONObject obj, resp;
-    private String response;
+//    private FirebaseAuth auth;
+//    private FirebaseDatabase database;
+//    private DatabaseReference myref;
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
+    private String responseBody;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +66,10 @@ public class Register extends AppCompatActivity {
         Hackerrank = (EditText) findViewById(R.id.register_hackerrank);
         Register = (Button) findViewById(R.id.register_register);
         signin = (TextView) findViewById(R.id.register_signin);
-        auth =FirebaseAuth.getInstance();
-        database =FirebaseDatabase.getInstance();
-        obj = new JSONObject();
+//        auth =FirebaseAuth.getInstance();
+//        database =FirebaseDatabase.getInstance();
 
-        myref =database.getReference("Users");
-
+//        myref =database.getReference("Users");
 
         Register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,17 +101,6 @@ public class Register extends AppCompatActivity {
         codeforces = Codeforces.getText().toString().trim();
         codechef = Codechef.getText().toString().trim();
         hackerrank = Hackerrank.getText().toString().trim();
-        try {
-            obj.put("name", name);
-            obj.put("college", college);
-            obj.put("email", email);
-            obj.put("password", pass);
-            obj.put("codeforces", codeforces);
-            obj.put("codechef", codechef);
-            obj.put("hackerrank", hackerrank);
-        } catch (JSONException e){
-            e.printStackTrace();
-        }
         if(name.isEmpty())
         {
             Name.setError("Enter your Name");
@@ -172,7 +167,38 @@ public class Register extends AppCompatActivity {
             Hackerrank.requestFocus();
             return;
         }
-        Toast.makeText(getApplicationContext(),"Hey There",Toast.LENGTH_SHORT).show();
+        Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+
+        RegisterAPIBody body = new RegisterAPIBody(name, email, college, codeforces, codechef, hackerrank);
+        Call<RegisterAPIResponse> call = jsonPlaceHolderApi.registerUserPost(body);
+        call.enqueue(new Callback<RegisterAPIResponse>() {
+            @Override
+            public void onResponse(Call<RegisterAPIResponse> call, Response<RegisterAPIResponse> response) {
+                if(!response.isSuccessful()) {
+                    responseBody = "Some Error Occurred";
+                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+                    return ;
+                }
+                RegisterAPIResponse postResponse = response.body();
+                responseBody = postResponse.getMessage();
+                Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<RegisterAPIResponse> call, Throwable t) {
+                responseBody = "Internal Server Error";
+                Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+            }
+        });
+
 
 //        final UserInfo userInfo = new UserInfo(name,college,email,codeforces,codechef,hackerrank);
 //        auth.createUserWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -214,49 +240,50 @@ public class Register extends AppCompatActivity {
 
     }
 
-    class fetchdata extends AsyncTask<Void, Void, String>{
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try{
-                URL url = new URL (" https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/register");
-                HttpURLConnection con = (HttpURLConnection)url.openConnection();
-                con.setRequestMethod("POST");
-                con.setRequestProperty("Content-Type", "application/json; utf-8");
-                con.setRequestProperty("Accept", "application/json");
-                con.setDoOutput(true);
-                String data_string = obj.toString();
-                try(OutputStream os = con.getOutputStream()) {
-                    byte[] input = data_string.getBytes("utf-8");
-                    os.write(input, 0, input.length);
-                }
-                try(BufferedReader br = new BufferedReader(
-                        new InputStreamReader(con.getInputStream(), "utf-8"))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine = null;
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
-                    }
-                    System.out.println(response.toString());
-                    response = new JSONObject(response.toString());
-                }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return "";
-        }
-    }
+//    class fetchdata extends AsyncTask<Void, Void, String>{
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//        }
+//
+//        @Override
+//        protected String doInBackground(Void... voids) {
+//            try{
+//                URL url = new URL (" https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/register");
+//                HttpURLConnection con = (HttpURLConnection)url.openConnection();
+//                con.setRequestMethod("POST");
+//                con.setRequestProperty("Content-Type", "application/json; utf-8");
+//                con.setRequestProperty("Accept", "application/json");
+//                con.setDoOutput(true);
+//                String data_string = obj.toString();
+//                try(OutputStream os = con.getOutputStream()) {
+//                    byte[] input = data_string.getBytes("utf-8");
+//                    os.write(input, 0, input.length);
+//                }
+//                try(BufferedReader br = new BufferedReader(
+//                        new InputStreamReader(con.getInputStream(), "utf-8"))) {
+//                    StringBuilder response = new StringBuilder();
+//                    String responseLine = null;
+//                    while ((responseLine = br.readLine()) != null) {
+//                        response.append(responseLine.trim());
+//                    }
+//                    System.out.println(response.toString());
+//                    resp = new JSONObject(response.toString());
+//
+//                }
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return "";
+//        }
+//    }
 }
