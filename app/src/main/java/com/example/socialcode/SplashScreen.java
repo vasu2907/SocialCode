@@ -36,104 +36,165 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class SplashScreen extends AppCompatActivity {
 
-    private FirebaseAuth auth;
-    private DatabaseReference myref;
+//    private FirebaseAuth auth;
+//    private DatabaseReference myref;
     private String codeforces;
-    private FirebaseDatabase database;
+//    private FirebaseDatabase database;
     static int splashtime = 1500;
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
+    private String responseBody;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        final String user,pass;
+        final String email, password;
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        user = sharedPref.getString("Email","");
-        pass = sharedPref.getString("Password","");
-        database = FirebaseDatabase.getInstance();
-        myref = database.getReference("Users");
-        auth = FirebaseAuth.getInstance();
-        if(!user.isEmpty() && !pass.isEmpty())
-        {
-            auth.signInWithEmailAndPassword(user,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        email = sharedPref.getString("Email", "");
+        password = sharedPref.getString("Password", "");
+//        database = FirebaseDatabase.getInstance();
+//        myref = database.getReference("Users");
+//        auth = FirebaseAuth.getInstance();
+        if (!email.isEmpty() && !password.isEmpty()) {
+            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build();
+            jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+            LoginAPIBody body = new LoginAPIBody(email, password);
+            Call<LoginAPIResponse> call = jsonPlaceHolderApi.loginUserPost(body);
+            call.enqueue(new Callback<LoginAPIResponse>() {
                 @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful())
-                    {
-                        myref.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                UserInfo userInfo = dataSnapshot.child(auth.getCurrentUser().getUid())
-                                        .child("Info").getValue(UserInfo.class);
-//                                Toast.makeText(getApplicationContext(),"Database",Toast.LENGTH_SHORT).show();
-                                codeforces = userInfo.getCodeforces();
-                                Log.d("Database",codeforces);
-                                fetchdata process = new fetchdata();
-                                process.execute();
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-//                        Log.d("DatabaseOut","$$"+codeforces);
-
+                public void onResponse(Call<LoginAPIResponse> call, Response<LoginAPIResponse> response) {
+                    if(!response.isSuccessful()) {
+                        Intent intent = new Intent(getApplicationContext(), Login.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
                     }
-                    else
-                    {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(getApplicationContext(),Login.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                finish();
-                            }
-                        },splashtime);
+                    LoginAPIResponse postResponse = response.body();
+                    responseBody = postResponse.getMessage();
+                    if(postResponse.getCredentials() == true) {
+                        responseBody = "Login Successful";
+                        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor =sharedPref.edit();
+                        editor.putString("Email",email);
+                        editor.putString("Password",password);
+                        editor.commit();
+                        Intent intent = new Intent(getApplicationContext(),Profile.class);
+                        intent.putExtra("rating", postResponse.getCodeforces_rating());
+                        intent.putExtra("friends", postResponse.getCodeforces_friends());
+                        intent.putExtra("contests", postResponse.getCodeforces_contests());
+                        intent.putExtra("name", postResponse.getName());
+                        intent.putExtra("college", postResponse.getCollege());
+                        intent.putExtra("verified", postResponse.getVerified());
+                        intent.putExtra("email", email);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+
+                    } else {
+                        responseBody = "Login Failed";
+                        Intent intent = new Intent(getApplicationContext(), Login.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
                     }
+                    return;
                 }
-            });
-        }
-        else
-        {
-            new Handler().postDelayed(new Runnable() {
+
                 @Override
-                public void run() {
-                    Intent intent = new Intent(getApplicationContext(),Login.class);
+                public void onFailure(Call<LoginAPIResponse> call, Throwable t) {
+                    Intent intent = new Intent(getApplicationContext(), Login.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
                 }
-            },splashtime);
+            });
+//            auth.signInWithEmailAndPassword(user, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                @Override
+//                public void onComplete(@NonNull Task<AuthResult> task) {
+//                    if (task.isSuccessful()) {
+//                        myref.addValueEventListener(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                UserInfo userInfo = dataSnapshot.child(auth.getCurrentUser().getUid())
+//                                        .child("Info").getValue(UserInfo.class);
+////                                Toast.makeText(getApplicationContext(),"Database",Toast.LENGTH_SHORT).show();
+//                                codeforces = userInfo.getCodeforces();
+//                                Log.d("Database", codeforces);
+//                                fetchdata process = new fetchdata();
+//                                process.execute();
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
+////                        Log.d("DatabaseOut","$$"+codeforces);
+//
+//                    } else {
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Intent intent = new Intent(getApplicationContext(), Login.class);
+//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                startActivity(intent);
+//                                finish();
+//                            }
+//                        }, splashtime);
+//                    }
+//                }
+//            });
+
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(getApplicationContext(), Login.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+            }, splashtime);
         }
     }
-    private class fetchdata extends AsyncTask<Void,Void,String> {
-
-        public fetchdata()
-        {
-            super();
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Intent intent = new Intent(getApplicationContext(),Profile.class);
-//            intent.putExtra("rating",rating);
-//            intent.putExtra("friends",friends);
-//            intent.putExtra("contests",contests);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
+}
+//    private class fetchdata extends AsyncTask<Void,Void,String> {
+//
+//        public fetchdata()
+//        {
+//            super();
+//
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//            Intent intent = new Intent(getApplicationContext(),Profile.class);
+////            intent.putExtra("rating",rating);
+////            intent.putExtra("friends",friends);
+////            intent.putExtra("contests",contests);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            finish();
+//        }
+//
+//        @Override
+//        protected String doInBackground(Void... voids) {
 //            try{
 //
 //
@@ -203,25 +264,24 @@ public class SplashScreen extends AppCompatActivity {
 //            }
 //            return null;
 
-            try {
-                URL url = new URL("http://codeforces.com/api/user.info?handles="+codeforces);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line).append("\n");
-                    }
-                    bufferedReader.close();
-                    return stringBuilder.toString();
-                } finally {
-                    urlConnection.disconnect();
-                }
-            } catch (Exception e) {
-                Log.e("ERROR", e.getMessage(), e);
-                return null;
-            }
-        }
-    }
-}
+//            try {
+//                URL url = new URL("http://codeforces.com/api/user.info?handles="+codeforces);
+//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//                try {
+//                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+//                    StringBuilder stringBuilder = new StringBuilder();
+//                    String line;
+//                    while ((line = bufferedReader.readLine()) != null) {
+//                        stringBuilder.append(line).append("\n");
+//                    }
+//                    bufferedReader.close();
+//                    return stringBuilder.toString();
+//                } finally {
+//                    urlConnection.disconnect();
+//                }
+//            } catch (Exception e) {
+//                Log.e("ERROR", e.getMessage(), e);
+//                return null;
+//            }
+//        }
+//    }
