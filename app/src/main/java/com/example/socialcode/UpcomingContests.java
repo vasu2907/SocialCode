@@ -27,10 +27,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UpcomingContests extends AppCompatActivity {
     RecyclerView recyclerView;
     private ArrayList<ContestsInfo> arrayList;
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
+    private String responseBody;
     String rest = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,76 +59,112 @@ public class UpcomingContests extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),LinearLayoutManager.VERTICAL));
         arrayList = new ArrayList<>();
-        Log.d("Dekhte hain","####");
-        fetchdata process = new fetchdata();
-        process.execute();
-        Log.d("Dekhte hain Bhakkk bsdk","####"+rest);
+//        Log.d("Dekhte hain","####");
+//        fetchdata process = new fetchdata();
+//        process.execute();
+//        Log.d("Dekhte hain Bhakkk bsdk","####"+rest);
 
-    }
+        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
-    class fetchdata extends AsyncTask<Void,Void,String>{
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(),arrayList);
-            recyclerView.setAdapter(searchAdapter);
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try{
-                URL url = new URL("https://codeforces.com/api/contest.list?");
-                HttpURLConnection httpURLConnection =(HttpURLConnection)url.openConnection();
-                InputStream inputStream =httpURLConnection.getInputStream();
-                BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
-                String line ="";
-                String result = "";
-                while (line!= null)
-                {
-                    line = bufferedReader.readLine();
-                    result = result + line;
-                }
-                JSONObject jsonObject = new JSONObject(result);
-
-                if(jsonObject.getString("status").equals("OK"))
-                {
-                    JSONArray temp = jsonObject.getJSONArray("result");
-                    for(int i=0;i<temp.length();i++)
-                    {
-                        JSONObject ob = temp.getJSONObject(i);
-                        if(!ob.getString("phase").equals("BEFORE"))
-                        {
-                            break;
-                        }
-                        ContestsInfo contestsInfo = new ContestsInfo(ob.getString("name"),
-                                gettime(ob.getInt("durationSeconds")),
-                                getstarttime(ob.getInt("startTimeSeconds")),
-                                getstartdate(ob.getInt("startTimeSeconds")),
-                                String.valueOf(ob.getInt("id")));
-                        arrayList.add(contestsInfo);
-                    }
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(),"Connection Failed...",Toast.LENGTH_LONG).show();
+        Call<ContestAPIResponse> call = jsonPlaceHolderApi.constestsGet();
+        call.enqueue(new Callback<ContestAPIResponse>() {
+            @Override
+            public void onResponse(Call<ContestAPIResponse> call, Response<ContestAPIResponse> response) {
+                if(!response.isSuccessful()) {
+                    responseBody = "Internal Server Error";
+                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+                    return;
                 }
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
+                ContestAPIResponse getResponse = response.body();
+                List<HashMap<String, String>> contests = getResponse.getContest();
+                for (HashMap<String, String> temp: contests) {
+                    ContestsInfo contestsInfo = new ContestsInfo(
+                            temp.get("name"),
+                            temp.get("contest_duration"),
+                            temp.get("contest_starttime"),
+                            temp.get("contest_date"),
+                            temp.get("id"));
+                    arrayList.add(contestsInfo);
+                }
             }
 
-            return null;
-        }
+            @Override
+            public void onFailure(Call<ContestAPIResponse> call, Throwable t) {
+                responseBody = "Failed to Load Contests List";
+                Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
+
+//    class fetchdata extends AsyncTask<Void,Void,String>{
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(),arrayList);
+//            recyclerView.setAdapter(searchAdapter);
+//            super.onPostExecute(s);
+//        }
+//
+//        @Override
+//        protected String doInBackground(Void... voids) {
+//            try{
+//                URL url = new URL("https://codeforces.com/api/contest.list?");
+//                HttpURLConnection httpURLConnection =(HttpURLConnection)url.openConnection();
+//                InputStream inputStream =httpURLConnection.getInputStream();
+//                BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
+//                String line ="";
+//                String result = "";
+//                while (line!= null)
+//                {
+//                    line = bufferedReader.readLine();
+//                    result = result + line;
+//                }
+//                JSONObject jsonObject = new JSONObject(result);
+//
+//                if(jsonObject.getString("status").equals("OK"))
+//                {
+//                    JSONArray temp = jsonObject.getJSONArray("result");
+//                    for(int i=0;i<temp.length();i++)
+//                    {
+//                        JSONObject ob = temp.getJSONObject(i);
+//                        if(!ob.getString("phase").equals("BEFORE"))
+//                        {
+//                            break;
+//                        }
+//                        ContestsInfo contestsInfo = new ContestsInfo(ob.getString("name"),
+//                                gettime(ob.getInt("durationSeconds")),
+//                                getstarttime(ob.getInt("startTimeSeconds")),
+//                                getstartdate(ob.getInt("startTimeSeconds")),
+//                                String.valueOf(ob.getInt("id")));
+//                        arrayList.add(contestsInfo);
+//                    }
+//                }
+//                else
+//                {
+//                    Toast.makeText(getApplicationContext(),"Connection Failed...",Toast.LENGTH_LONG).show();
+//                }
+//
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return null;
+//        }
+//    }
 
     public String gettime(int st)
     {
