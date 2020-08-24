@@ -91,6 +91,8 @@ public class UpcomingContests extends AppCompatActivity {
                             temp.get("id"));
                     arrayList.add(contestsInfo);
                 }
+                SearchAdapter searchAdapter = new SearchAdapter(getApplicationContext(), arrayList);
+                recyclerView.setAdapter(searchAdapter);
             }
 
             @Override
