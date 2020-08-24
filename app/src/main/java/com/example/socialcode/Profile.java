@@ -85,6 +85,9 @@ public class Profile extends AppCompatActivity {
         codeforcesrating = intent.getStringExtra("rating");
         codeforcesfriends = intent.getStringExtra("friends");
         codeforcescontests = intent.getStringExtra("contests");
+        coderating.setText(codeforcesrating);
+        codefriends.setText(codeforcesfriends);
+        codecontests.setText(codeforcescontests);
 //        coderating.setText(codeforcesrating);
         Log.d("Rating","$$$$"+codeforcesrating);
 //        codefriends.setText(codeforcesfriends);
