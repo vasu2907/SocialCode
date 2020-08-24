@@ -81,14 +81,14 @@ public class UpcomingContests extends AppCompatActivity {
                 }
 
                 ContestAPIResponse getResponse = response.body();
-                List<HashMap<String, String>> contests = getResponse.getContest_lists();
+                List<HashMap<String, String>> contests = getResponse.getContest();
                 for (HashMap<String, String> temp: contests) {
                     ContestsInfo contestsInfo = new ContestsInfo(
-                            temp.get("contest_name"),
+                            temp.get("name"),
                             temp.get("contest_duration"),
                             temp.get("contest_starttime"),
-                            temp.get("contest_startdate"),
-                            temp.get("contest_id"));
+                            temp.get("contest_date"),
+                            temp.get("id"));
                     arrayList.add(contestsInfo);
                 }
             }

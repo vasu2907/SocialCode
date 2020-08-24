@@ -8,7 +8,7 @@ import java.util.List;
 public class ContestAPIResponse {
     private Integer status;
     private String message;
-    private List<HashMap<String, String>> contest_lists;
+    private List<HashMap<String, String>> contest;
 
     @SerializedName("body")
     private String text;
@@ -21,7 +21,7 @@ public class ContestAPIResponse {
         return message;
     }
 
-    public List<HashMap<String, String>> getContest_lists() {
-        return contest_lists;
+    public List<HashMap<String, String>> getContest() {
+        return contest;
     }
 }
