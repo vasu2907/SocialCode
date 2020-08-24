@@ -192,8 +192,8 @@ public class UpcomingContests extends AppCompatActivity {
     public String getstarttime(int st)
     {
         String res="";
-        Date dateTime=new Date((long)st*1000);
-        String [] units = String.valueOf(dateTime).split(" ");
+        Date line = new Date((long)st*1000);
+        String [] units = String.valueOf(line).split(" ");
         String[] temp = units[3].split(":");
         res = temp[0]+":"+temp[1];
         return res;
@@ -202,9 +202,9 @@ public class UpcomingContests extends AppCompatActivity {
     public String getstartdate(int st)
     {
         String res="";
-        Date dateTime=new Date((long)st*1000);
-        String [] units = String.valueOf(dateTime).split(" ");
-        res = units[1]+" "+units[2]+"\n"+units[0];
+        Date line = new Date((long)st*1000);
+        String [] units = String.valueOf(line).split(" ");
+        res = units[1] + " " + units[2] + "\n" + units[0];
         return res;
     }
 }
