@@ -97,12 +97,12 @@ public class Login extends AppCompatActivity {
             password.requestFocus();
             return;
         }
-//        if(pass.length()<8)
-//        {
-//            password.setError("Minimum Password Length is 8");
-//            password.requestFocus();
-//            return;
-//        }
+        if(pass.length()<8)
+        {
+            password.setError("Minimum Password Length is 8");
+            password.requestFocus();
+            return;
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
                                 .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
