@@ -14,7 +14,7 @@ public interface JsonPlaceHolderApi {
     @POST("login")
     Call<LoginAPIResponse> loginUserPost(@Body LoginAPIBody loginAPIBody);
 
-    @GET("contests")
+    @GET("contest")
     Call<ContestAPIResponse> constestsGet();
 
 }
