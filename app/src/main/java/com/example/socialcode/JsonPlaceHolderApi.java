@@ -5,6 +5,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface JsonPlaceHolderApi {
 
@@ -16,5 +17,8 @@ public interface JsonPlaceHolderApi {
 
     @GET("contest")
     Call<ContestAPIResponse> constestsGet();
+
+    @GET("user/{id}")
+    Call<DynamoUserInfo> getUserInfo(@Path("id") String email);
 
 }
