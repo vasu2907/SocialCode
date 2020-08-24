@@ -122,27 +122,25 @@ public class Login extends AppCompatActivity {
                 LoginAPIResponse postResponse = response.body();
                 responseBody = postResponse.getMessage();
                 if(postResponse.getCredentials() == true) {
-                    responseBody = "Login Successful";
-                    Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
                     SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor =sharedPref.edit();
                     editor.putString("Email",email);
                     editor.putString("Password",pass);
+                    editor.putString("codeforces_rating", postResponse.getCodeforces_rating());
+                    editor.putString("codeforces_friends", postResponse.getCodeforces_friends());
+                    editor.putString("codeforces_contest", postResponse.getCodeforces_contests());
+                    editor.putString("name", postResponse.getName());
+                    editor.putString("college", postResponse.getCollege());
+                    editor.putString("verified", postResponse.getVerified()?"True":"False");
                     editor.commit();
+
                     Intent intent = new Intent(getApplicationContext(),Profile.class);
-                    intent.putExtra("rating", postResponse.getCodeforces_rating());
-                    intent.putExtra("friends", postResponse.getCodeforces_friends());
-                    intent.putExtra("contests", postResponse.getCodeforces_contests());
-                    intent.putExtra("name", postResponse.getName());
-                    intent.putExtra("college", postResponse.getCollege());
-                    intent.putExtra("verified", postResponse.getVerified());
-                    intent.putExtra("email", email);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
 
                 } else {
-                    responseBody = "Login Failed";
+                    responseBody = "Invalid Credentials";
                     Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
                 }
             }

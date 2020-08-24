@@ -55,12 +55,11 @@ public class Profile extends AppCompatActivity {
     private ActionBarDrawerToggle abdt;
     private TextView logout,coderating,codefriends,codecontests;
     private String codeforcesrating,codeforcesfriends,codeforcescontests;
-    private StorageReference storageReference;
-    private FirebaseAuth auth;
     private Intent intent;
-    private DatabaseReference myref;
-    private String rating="";
-    private String codeforces_id;
+//    private StorageReference storageReference;
+//    private FirebaseAuth auth;
+//    private DatabaseReference myref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,19 +81,19 @@ public class Profile extends AppCompatActivity {
         codefriends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         codecontests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
         intent = getIntent();
-        codeforcesrating = intent.getStringExtra("rating");
-        codeforcesfriends = intent.getStringExtra("friends");
-        codeforcescontests = intent.getStringExtra("contests");
+
+        SharedPreferences sharedPref = getSharedPreferences("MyData",Context.MODE_PRIVATE);
+        codeforcesrating = sharedPref.getString("codeforces_rating", "N/A");
+        codeforcesfriends = sharedPref.getString("codeforces_friends", "N/A");
+        codeforcescontests = sharedPref.getString("codeforces_contest", "N/A");
         coderating.setText(codeforcesrating);
         codefriends.setText(codeforcesfriends);
         codecontests.setText(codeforcescontests);
-//        coderating.setText(codeforcesrating);
-        Log.d("Rating","$$$$"+codeforcesrating);
-//        codefriends.setText(codeforcesfriends);
-//        codecontests.setText(codeforcescontests);
-        storageReference = FirebaseStorage.getInstance().getReference();
-        auth = FirebaseAuth.getInstance();
-        myref = FirebaseDatabase.getInstance().getReference("Users");
+
+
+//        storageReference = FirebaseStorage.getInstance().getReference();
+//        auth = FirebaseAuth.getInstance();
+//        myref = FirebaseDatabase.getInstance().getReference("Users");
         logout = (TextView) findViewById(R.id.navigation_logout);
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +103,12 @@ public class Profile extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("Email","");
                 editor.putString("Password","");
+                editor.putString("codeforces_rating", "N/A");
+                editor.putString("codeforces_friends", "N/A");
+                editor.putString("codeforces_contest", "N/A");
+                editor.putString("name", "");
+                editor.putString("college", "");
+                editor.putString("verified", "False");
                 editor.commit();
 //                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(),Login.class);
@@ -149,6 +154,10 @@ public class Profile extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        coderating.setText(sharedPref.getString("codeforces_rating", "N/A"));
+        codecontests.setText(sharedPref.getString("codeforces_contest", "N/A"));
+        codefriends.setText(sharedPref.getString("codeforces_friends", "N/A"));
 
 //        myref.addValueEventListener(new ValueEventListener() {
 //            @Override
@@ -167,26 +176,26 @@ public class Profile extends AppCompatActivity {
 //            }
 //        });
 
-        try{
-                storageReference.child("profilepics/"+auth.getCurrentUser().getUid()+".jpg")
-                        .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        try{
-                            Glide.with(getApplicationContext())
-                                    .load(uri).into(pic);
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-            return;
-        }
+//        try{
+//                storageReference.child("profilepics/"+auth.getCurrentUser().getUid()+".jpg")
+//                        .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                    @Override
+//                    public void onSuccess(Uri uri) {
+//                        try{
+//                            Glide.with(getApplicationContext())
+//                                    .load(uri).into(pic);
+//                        }
+//                        catch (Exception e)
+//                        {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+//        }catch (Exception e)
+//        {
+//            e.printStackTrace();
+//            return;
+//        }
     }
 
     @Override
@@ -196,63 +205,63 @@ public class Profile extends AppCompatActivity {
     }
 
 
-    private class fetchdata extends AsyncTask<Void,Void,String>{
-        String res="";
-
-        public fetchdata() {
-            super();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            try {
-                JSONObject object = new JSONObject(s);
-                String status = object.getString("status");
-                if(status.equals("OK")){
-                    JSONArray res = object.getJSONArray("result");
-                    JSONObject mydata = (JSONObject) res.get(0);
-                    rating = mydata.getString("rating");
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),object.getString("comment"),Toast.LENGTH_LONG).show();
-                }
-            } catch (JSONException e) {
-                // Appropriate error handling code
-            }
-            coderating.setText(rating);
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try {
-                Log.d("ID=","####"+codeforces_id);
-                URL url = new URL("http://codeforces.com/api/user.info?handles=+"+codeforces_id);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    InputStream inputStream =urlConnection.getInputStream();
-                    BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
-                    String line="";
-                    String res="";
-                    while (line!=null) {
-                        line = bufferedReader.readLine();
-                        res = res+line;
-                    }
-                    bufferedReader.close();
-                    return res;
-                } finally {
-                    urlConnection.disconnect();
-                }
-            } catch (Exception e) {
-                Log.e("ERROR", e.getMessage(), e);
-                return null;
-            }
-        }
-    }
+//    private class fetchdata extends AsyncTask<Void,Void,String>{
+//        String res="";
+//
+//        public fetchdata() {
+//            super();
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//            try {
+//                JSONObject object = new JSONObject(s);
+//                String status = object.getString("status");
+//                if(status.equals("OK")){
+//                    JSONArray res = object.getJSONArray("result");
+//                    JSONObject mydata = (JSONObject) res.get(0);
+//                    rating = mydata.getString("rating");
+//                }
+//                else{
+//                    Toast.makeText(getApplicationContext(),object.getString("comment"),Toast.LENGTH_LONG).show();
+//                }
+//            } catch (JSONException e) {
+//                // Appropriate error handling code
+//            }
+//            coderating.setText(rating);
+//        }
+//
+//        @Override
+//        protected String doInBackground(Void... voids) {
+//            try {
+//                Log.d("ID=","####"+codeforces_id);
+//                URL url = new URL("http://codeforces.com/api/user.info?handles=+"+codeforces_id);
+//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//                try {
+//                    InputStream inputStream =urlConnection.getInputStream();
+//                    BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
+//                    String line="";
+//                    String res="";
+//                    while (line!=null) {
+//                        line = bufferedReader.readLine();
+//                        res = res+line;
+//                    }
+//                    bufferedReader.close();
+//                    return res;
+//                } finally {
+//                    urlConnection.disconnect();
+//                }
+//            } catch (Exception e) {
+//                Log.e("ERROR", e.getMessage(), e);
+//                return null;
+//            }
+//        }
+//    }
 
 }
