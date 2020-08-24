@@ -173,7 +173,7 @@ public class Register extends AppCompatActivity {
                                     .build();
         jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
-        RegisterAPIBody body = new RegisterAPIBody(name, email, college, codeforces, codechef, hackerrank);
+        RegisterAPIBody body = new RegisterAPIBody(name, email, pass, college, codeforces, codechef, hackerrank);
         Call<RegisterAPIResponse> call = jsonPlaceHolderApi.registerUserPost(body);
         call.enqueue(new Callback<RegisterAPIResponse>() {
             @Override
