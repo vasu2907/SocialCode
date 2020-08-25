@@ -93,9 +93,9 @@ public class UpdateProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                saveUserInfo();
-                UserInfo newInfo = new UserInfo(Name.getText().toString(),College.getText().toString(),
-                                                Email.getText().toString(),Codeforces.getText().toString(),
-                                                Codechef.getText().toString(),Hackerrank.getText().toString());
+//                UserInfo newInfo = new UserInfo(Name.getText().toString(),College.getText().toString(),
+//                                                Email.getText().toString(),Codeforces.getText().toString(),
+//                                                Codechef.getText().toString(),Hackerrank.getText().toString());
 //                myref.child(auth.getCurrentUser().getUid()).child("Info").setValue(newInfo);
             }
         });
