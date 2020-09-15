@@ -28,4 +28,7 @@ public interface JsonPlaceHolderApi {
     @PUT("user/{id}")
     Call<RetrieveDataResponse> retrieveData(@Path("id") String email);
 
+    @POST("verify")
+    Call<RegisterAPIResponse> verify_user(@Body VerifyUserBody verifyUserBody);
+
 }

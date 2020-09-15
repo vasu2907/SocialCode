@@ -125,12 +125,10 @@ public class Profile extends AppCompatActivity {
                 int id = menuItem.getItemId();
                 if(id == R.id.navigation_updateprofile)
                 {
-                    Toast.makeText(getApplicationContext(),"Update Profile",Toast.LENGTH_LONG).show();
                     startActivity( new Intent(getApplicationContext(),UpdateProfile.class));
                 }
                 else if(id == R.id.navigation_upcomingcontests)
                 {
-                    Toast.makeText(getApplicationContext(),"Upcoming Contests",Toast.LENGTH_LONG).show();
                     startActivity( new Intent(getApplicationContext(), UpcomingContests.class));
                 }
                 else if(id == R.id.navigation_searchfriend)

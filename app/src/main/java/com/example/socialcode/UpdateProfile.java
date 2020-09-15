@@ -9,6 +9,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UpdateProfile extends AppCompatActivity {
     private EditText Name,College,Codechef,Codeforces,Hackerrank;
-    private TextView Email;
+    private TextView Email, User_verification_msg;
     private ImageView profilepic, retrieve_data, verified_user;
     private Button save;
     private String profileImageurl;
@@ -57,7 +58,6 @@ public class UpdateProfile extends AppCompatActivity {
     private static final int choose_Image =101;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private DynamoUserInfo info;
-    private Boolean flag;
 //    private FirebaseAuth auth;
 //    private DatabaseReference myref;
 //    private FirebaseStorage firebaseStorage;
@@ -84,6 +84,14 @@ public class UpdateProfile extends AppCompatActivity {
         Email = (TextView) findViewById(R.id.updateprofile_email);
         retrieve_data = (ImageView) findViewById(R.id.retrieve_data);
         verified_user = (ImageView) findViewById(R.id.verify_user);
+        User_verification_msg = (TextView) findViewById(R.id.verify_msg);
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String verified = sharedPref.getString("verified", "False");
+        if(verified.equals("True") == true){
+            verified_user.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.verified_user));
+            User_verification_msg.setText("Verified");
+        }
+
 //        auth = FirebaseAuth.getInstance();
 //        firebaseStorage = FirebaseStorage.getInstance();
 //        myref = FirebaseDatabase.getInstance().getReference("Users");
@@ -108,12 +116,49 @@ public class UpdateProfile extends AppCompatActivity {
         retrieve_data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flag = false;
                 retrieve_userInfo();
                 update_SharedPrefData();
             }
         });
 
+        verified_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                verify_user();
+            }
+        });
+    }
+
+    private void verify_user(){
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email", "");
+        String verified = sharedPref.getString("verified", "False");
+        if(verified.equals("True") == true){
+            Toast.makeText(getApplicationContext(), "User Already Verified", Toast.LENGTH_SHORT).show();
+            return ;
+        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        VerifyUserBody body = new VerifyUserBody(email);
+        Call<RegisterAPIResponse> call = jsonPlaceHolderApi.verify_user(body);
+        call.enqueue(new Callback<RegisterAPIResponse>() {
+            @Override
+            public void onResponse(Call<RegisterAPIResponse> call, Response<RegisterAPIResponse> response) {
+                if(!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Email not Sent", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Verification Email Sent", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<RegisterAPIResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Email not Sent", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void update_SharedPrefData(){
@@ -138,6 +183,7 @@ public class UpdateProfile extends AppCompatActivity {
                 editor.putString("codeforces_rating", codeforces.get("rating"));
                 editor.putString("codeforces_friends", codeforces.get("friends"));
                 editor.putString("codeforces_contest", codeforces.get("contests"));
+                editor.apply();
             }
 
             @Override
@@ -162,7 +208,6 @@ public class UpdateProfile extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Unable to Retrieve data", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                flag = true;
                 Toast.makeText(getApplicationContext(), "Retrieved Successfully", Toast.LENGTH_SHORT).show();
             }
 
@@ -283,6 +328,18 @@ public class UpdateProfile extends AppCompatActivity {
                 Codechef.setText(codechef.get("handle"));
                 Hackerrank.setText(hackerrank.get("handle"));
                 Codeforces.setText(codeforces.get("handle"));
+                String verified = info.getVerified()?"True":"False";
+                SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor =sharedPref.edit();
+                editor.putString("verified", verified);
+                editor.commit();
+                if(verified.equals("True") == true){
+                    verified_user.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.verified_user));
+                    User_verification_msg.setText("Verified");
+                }else{
+                    verified_user.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.not_verified_user));
+                    User_verification_msg.setText("Not Verified");
+                }
             }
 
             @Override
