@@ -50,14 +50,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UpdateProfile extends AppCompatActivity {
     private EditText Name,College,Codechef,Codeforces,Hackerrank;
     private TextView Email;
-    private ImageView profilepic;
+    private ImageView profilepic, retrieve_data, verified_user;
     private Button save;
     private String profileImageurl;
     private Uri uriprofileimage;
     private static final int choose_Image =101;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private DynamoUserInfo info;
-    //    private FirebaseAuth auth;
+    private Boolean flag;
+//    private FirebaseAuth auth;
 //    private DatabaseReference myref;
 //    private FirebaseStorage firebaseStorage;
     @Override
@@ -81,6 +82,8 @@ public class UpdateProfile extends AppCompatActivity {
         profilepic = (ImageView) findViewById(R.id.updateprofile_img);
         save = (Button) findViewById(R.id.updateprofile_save);
         Email = (TextView) findViewById(R.id.updateprofile_email);
+        retrieve_data = (ImageView) findViewById(R.id.retrieve_data);
+        verified_user = (ImageView) findViewById(R.id.verify_user);
 //        auth = FirebaseAuth.getInstance();
 //        firebaseStorage = FirebaseStorage.getInstance();
 //        myref = FirebaseDatabase.getInstance().getReference("Users");
@@ -102,6 +105,72 @@ public class UpdateProfile extends AppCompatActivity {
             }
         });
 
+        retrieve_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flag = false;
+                retrieve_userInfo();
+                update_SharedPrefData();
+            }
+        });
+
+    }
+
+    private void update_SharedPrefData(){
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email", "");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        Call<DynamoUserInfo> call = jsonPlaceHolderApi.getUserInfo(email);
+        call.enqueue(new Callback<DynamoUserInfo>() {
+            @Override
+            public void onResponse(Call<DynamoUserInfo> call, Response<DynamoUserInfo> response) {
+                if(!response.isSuccessful()) {
+                    return;
+                }
+                DynamoUserInfo postResponse = response.body();
+                HashMap<String, String> codeforces = postResponse.getCodeforces();
+                SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor =sharedPref.edit();
+                editor.putString("codeforces_rating", codeforces.get("rating"));
+                editor.putString("codeforces_friends", codeforces.get("friends"));
+                editor.putString("codeforces_contest", codeforces.get("contests"));
+            }
+
+            @Override
+            public void onFailure(Call<DynamoUserInfo> call, Throwable t) {
+            }
+        });
+    }
+
+    private void retrieve_userInfo(){
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email", "");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        Call<RetrieveDataResponse> call = jsonPlaceHolderApi.retrieveData(email);
+        call.enqueue(new Callback<RetrieveDataResponse>() {
+            @Override
+            public void onResponse(Call<RetrieveDataResponse> call, Response<RetrieveDataResponse> response) {
+                if(!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Unable to Retrieve data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                flag = true;
+                Toast.makeText(getApplicationContext(), "Retrieved Successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<RetrieveDataResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Unable to Retrieve Data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void saveUpdatedInfo(){

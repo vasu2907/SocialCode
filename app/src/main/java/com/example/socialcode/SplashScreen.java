@@ -58,8 +58,8 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         final String email, password;
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-        email = sharedPref.getString("Email", "");
-        password = sharedPref.getString("Password", "");
+        email = sharedPref.getString("email", "");
+        password = sharedPref.getString("password", "");
 //        database = FirebaseDatabase.getInstance();
 //        myref = database.getReference("Users");
 //        auth = FirebaseAuth.getInstance();
