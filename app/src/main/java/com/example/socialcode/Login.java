@@ -124,8 +124,8 @@ public class Login extends AppCompatActivity {
                 if(postResponse.getCredentials() == true) {
                     SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor =sharedPref.edit();
-                    editor.putString("Email",email);
-                    editor.putString("Password",pass);
+                    editor.putString("email",email);
+                    editor.putString("password",pass);
                     editor.putString("codeforces_rating", postResponse.getCodeforces_rating());
                     editor.putString("codeforces_friends", postResponse.getCodeforces_friends());
                     editor.putString("codeforces_contest", postResponse.getCodeforces_contests());

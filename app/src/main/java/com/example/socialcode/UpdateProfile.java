@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -92,6 +93,7 @@ public class UpdateProfile extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                  saveUpdatedInfo();
 //                saveUserInfo();
 //                UserInfo newInfo = new UserInfo(Name.getText().toString(),College.getText().toString(),
 //                                                Email.getText().toString(),Codeforces.getText().toString(),
@@ -100,6 +102,41 @@ public class UpdateProfile extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void saveUpdatedInfo(){
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String email = sharedPref.getString("email", "");
+        String name = Name.getText().toString();
+        String codechef = Codechef.getText().toString();
+        String codeforces = Codeforces.getText().toString();
+        String hackerrank = Hackerrank.getText().toString();
+        String college = College.getText().toString();
+        SaveProfileBody body = new SaveProfileBody(name, email, college, codechef, codeforces, hackerrank);
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        Call<SaveProfileResponse> call = jsonPlaceHolderApi.saveProfileData(email, body);
+
+        call.enqueue(new Callback<SaveProfileResponse>() {
+            @Override
+            public void onResponse(Call<SaveProfileResponse> call, Response<SaveProfileResponse> response) {
+                if(!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Unable to Update data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getApplicationContext(), "Data updated Successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<SaveProfileResponse> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Unable to Update Data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 //    private void saveUserInfo()
