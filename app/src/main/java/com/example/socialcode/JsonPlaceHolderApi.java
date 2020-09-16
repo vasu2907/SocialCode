@@ -31,4 +31,7 @@ public interface JsonPlaceHolderApi {
     @POST("verify")
     Call<RegisterAPIResponse> verify_user(@Body VerifyUserBody verifyUserBody);
 
+    @POST("friends")
+    Call<SearchFriendAPIResponse> search_friends(@Body SearchFriendAPIBody searchFriendAPIBody);
+
 }
