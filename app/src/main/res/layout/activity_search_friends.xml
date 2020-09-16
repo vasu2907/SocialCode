@@ -7,25 +7,42 @@
     tools:context=".SearchFriends"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/searchfriends_search"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Search Friends"
-        android:textSize="24sp"
-        android:layout_gravity="center"
-        android:paddingLeft="15dp"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/edittextround"
-        />
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+        <EditText
+            android:id="@+id/searchfriends_search"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:hint="Search Friends"
+            android:textSize="24sp"
+            android:layout_weight="0.8"
+            android:layout_gravity="center"
+            android:paddingLeft="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/edit_left_radius"
+            />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.14"
+            android:layout_marginTop="1dp"
+            android:layout_gravity="center"
+            android:background="@drawable/edit_right_radius"
+            android:src="@drawable/search_icon"
+            android:padding="5dp"
+            />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/searchfriends_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>
