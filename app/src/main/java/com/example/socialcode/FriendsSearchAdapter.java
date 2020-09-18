@@ -39,7 +39,7 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
 
     class SearchViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView Image,addfriend;
+        ImageView Image;
         TextView Name,Email;
         LinearLayout ParentLayout;
         public SearchViewHolder(@NonNull View itemView) {
@@ -47,7 +47,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
             Image = (ImageView) itemView.findViewById(R.id.friends_image);
             Name = (TextView) itemView.findViewById(R.id.friends_name);
             Email = (TextView) itemView.findViewById(R.id.friends_email);
-            addfriend = (ImageView) itemView.findViewById(R.id.friends_addfriend);
             ParentLayout = (LinearLayout) itemView.findViewById(R.id.parent_layout);
         }
     }
@@ -85,26 +84,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
             }
         });
 
-        searchViewHolder.addfriend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                myref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for( DataSnapshot snapshot : dataSnapshot.getChildren())
-                        {
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-        });
     }
 
     @Override
