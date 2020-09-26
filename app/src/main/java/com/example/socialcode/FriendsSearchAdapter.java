@@ -29,8 +29,8 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
 
     Context context;
     ArrayList<FriendsInfo> arrayList;
-    StorageReference storageReference;
-    DatabaseReference myref;
+//    StorageReference storageReference;
+//    DatabaseReference myref;
 
     public FriendsSearchAdapter(Context context, ArrayList<FriendsInfo> arrayList) {
         this.context = context;
@@ -63,22 +63,23 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
         searchViewHolder.Email.setText(arrayList.get(i).getEmail());
         final RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.defaultpic);
-        storageReference = FirebaseStorage.getInstance().getReference();
-        myref = FirebaseDatabase.getInstance().getReference("Users");
+//        storageReference = FirebaseStorage.getInstance().getReference();
+//        myref = FirebaseDatabase.getInstance().getReference("Users");
 
-        storageReference.child("profilepics/"+arrayList.get(i).getProfilepic()+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(context).setDefaultRequestOptions(requestOptions)
-                        .asBitmap().load(uri).into(searchViewHolder.Image);
-            }
-        });
+//        storageReference.child("profilepics/"+arrayList.get(i).getProfilepic()+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                Glide.with(context).setDefaultRequestOptions(requestOptions)
+//                        .asBitmap().load(uri).into(searchViewHolder.Image);
+//            }
+//        });
 
         searchViewHolder.ParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context,FriendProfile.class);
-                intent.putExtra("codeforces_handle",arrayList.get(i).getCodeforces_handle());
+                intent.putExtra("name", arrayList.get(i).getName());
+                intent.putExtra("email", arrayList.get(i).getEmail());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

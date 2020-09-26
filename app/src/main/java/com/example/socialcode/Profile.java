@@ -101,8 +101,8 @@ public class Profile extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences sharedPref = getSharedPreferences("MyData",Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("Email","");
-                editor.putString("Password","");
+                editor.putString("email","");
+                editor.putString("password","");
                 editor.putString("codeforces_rating", "N/A");
                 editor.putString("codeforces_friends", "N/A");
                 editor.putString("codeforces_contest", "N/A");

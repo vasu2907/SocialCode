@@ -34,4 +34,6 @@ public interface JsonPlaceHolderApi {
     @POST("friend")
     Call<SearchFriendAPIResponse> search_friends(@Body SearchFriendAPIBody searchFriendAPIBody);
 
+    @POST("friend/profile")
+    Call<FriendProfileAPIResponse> get_friend_info(@Body FriendProfileAPIBody friendProfileAPIBody);
 }
