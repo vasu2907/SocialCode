@@ -80,7 +80,7 @@ public class UpdateProfile extends AppCompatActivity {
         else {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
-        Toast.makeText(getApplicationContext(), "ONCREATE", Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), "ONCREATE", Toast.LENGTH_LONG).show();
         Name = (EditText) findViewById(R.id.updateprofile_name);
         College = (EditText) findViewById(R.id.updateprofile_college);
         Codechef = (EditText) findViewById(R.id.updateprofile_codechef);

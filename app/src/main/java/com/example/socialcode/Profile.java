@@ -173,9 +173,11 @@ public class Profile extends AppCompatActivity {
         HashMap<String, String> obj = null;
         try {
             obj = cacher.readCache();
-            byte[] decodeString = Base64.decode(obj.get("image"), Base64.DEFAULT);
-            Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
-            profile_pic.setImageBitmap(bitmap_img);
+            if(!obj.get("image").equals("")){
+                byte[] decodeString = Base64.decode(obj.get("image"), Base64.DEFAULT);
+                Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+                profile_pic.setImageBitmap(bitmap_img);
+            }
             Toast.makeText(getApplicationContext(), "hbe", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
