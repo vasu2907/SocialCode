@@ -64,9 +64,7 @@ public class UpdateProfile extends AppCompatActivity {
     private static final int choose_Image =101;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private DynamoUserInfo info;
-//    private FirebaseAuth auth;
-//    private DatabaseReference myref;
-//    private FirebaseStorage firebaseStorage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +78,6 @@ public class UpdateProfile extends AppCompatActivity {
         else {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
-//        Toast.makeText(getApplicationContext(), "ONCREATE", Toast.LENGTH_LONG).show();
         Name = (EditText) findViewById(R.id.updateprofile_name);
         College = (EditText) findViewById(R.id.updateprofile_college);
         Codechef = (EditText) findViewById(R.id.updateprofile_codechef);
@@ -99,7 +96,6 @@ public class UpdateProfile extends AppCompatActivity {
             Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
             profilepic.setImageBitmap(bitmap_img);
             profilepic.setTag("profilepic");
-            Toast.makeText(getApplicationContext(), "hbe", Toast.LENGTH_SHORT).show();
         }
 
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -110,24 +106,10 @@ public class UpdateProfile extends AppCompatActivity {
             User_verification_msg.setText("Verified");
         }
 
-//        auth = FirebaseAuth.getInstance();
-//        firebaseStorage = FirebaseStorage.getInstance();
-//        myref = FirebaseDatabase.getInstance().getReference("Users");
-//        profilepic.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showImageChooser();
-//            }
-//        });
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                   saveUpdatedInfo();
-//                saveUserInfo();
-//                UserInfo newInfo = new UserInfo(Name.getText().toString(),College.getText().toString(),
-//                                                Email.getText().toString(),Codeforces.getText().toString(),
-//                                                Codechef.getText().toString(),Hackerrank.getText().toString());
-//                myref.child(auth.getCurrentUser().getUid()).child("Info").setValue(newInfo);
             }
         });
 
@@ -299,7 +281,6 @@ public class UpdateProfile extends AppCompatActivity {
             bitmap_img.compress(Bitmap.CompressFormat.JPEG, 60, byteArrayOutputStream);
             base64 = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
         }
-//        Toast.makeText(getApplicationContext(), "image:"+hasImage(profilepic).toString(), Toast.LENGTH_SHORT).show();
 
         SaveProfileBody body = new SaveProfileBody(name, email, college, codechef, codeforces, hackerrank, base64);
 
@@ -329,30 +310,6 @@ public class UpdateProfile extends AppCompatActivity {
         });
     }
 
-//    private void saveUserInfo()
-//    {
-//        FirebaseUser user = auth.getCurrentUser();
-//        if(user!=null && profileImageurl!=null)
-//        {
-//            UserProfileChangeRequest profileChangeRequest =new UserProfileChangeRequest.Builder()
-//                    .setDisplayName(Name.getText().toString())
-//                    .setPhotoUri(Uri.parse(profileImageurl))
-//                    .build();
-//            user.updateProfile(profileChangeRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    if(task.isSuccessful())
-//                    {
-//                        Toast.makeText(getApplicationContext(),"Profile Updated",Toast.LENGTH_LONG).show();
-//                    }
-//                    else
-//                    {
-//                        Toast.makeText(getApplicationContext(),"Some Error Occurred",Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            });
-//        }
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -364,7 +321,6 @@ public class UpdateProfile extends AppCompatActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), uriprofileimage);
                 profilepic.setImageBitmap(bitmap);
                 profilepic.setTag("profilepic");
-//                Toast.makeText(getApplicationContext(), "fheb", Toast.LENGTH_SHORT).show();
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -375,7 +331,6 @@ public class UpdateProfile extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        Toast.makeText(getApplicationContext(), "ONSTART", Toast.LENGTH_LONG).show();
         Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
                                         .addConverterFactory(GsonConverterFactory.create())
@@ -420,39 +375,6 @@ public class UpdateProfile extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Unable to fetch data", Toast.LENGTH_LONG).show();
             }
         });
-//        myref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                UserInfo userInfo =dataSnapshot.child(auth.getCurrentUser().getUid()).child("Info").getValue(UserInfo.class);
-//                Name.setText(userInfo.getName());
-//                College.setText(userInfo.getCollege());
-//                Codechef.setText(userInfo.getCodechef());
-//                Codeforces.setText(userInfo.getCodeforces());
-//                Hackerrank.setText(userInfo.getHackerrank());
-//                Email.setText(userInfo.getEmail());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Toast.makeText(getApplicationContext(),"Some error occurred",Toast.LENGTH_LONG).show();
-//            }
-//        });
-
-//        try {
-//            firebaseStorage.getReference().child("profilepics/"+auth.getCurrentUser().getUid()+".jpg").getDownloadUrl()
-//                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                        @Override
-//                        public void onSuccess(Uri uri) {
-//                            Glide.with(getApplicationContext()).load(uri).into(profilepic);
-////                            profileImageurl = uri.toString();
-////                            Toast.makeText(getApplicationContext(),uri.toString(),Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//        }catch (Exception e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
     }
 
 
@@ -463,25 +385,4 @@ public class UpdateProfile extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent,"Select Profile image"),choose_Image);
     }
-
-//    private void uploadImagetoFirebase()
-//    {
-//        final StorageReference profileImageref = FirebaseStorage.getInstance().getReference("profilepics/" +
-//                auth.getCurrentUser().getUid()+".jpg");
-//        if(uriprofileimage!=null)
-//        {
-//            profileImageref.putFile(uriprofileimage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    profileImageurl = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
-////                    Toast.makeText(getApplicationContext(),profileImageurl,Toast.LENGTH_LONG).show();
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-//                }
-//            });
-//        }
-//    }
 }

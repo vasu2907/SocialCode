@@ -34,8 +34,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
 
     Context context;
     ArrayList<FriendsInfo> arrayList;
-//    StorageReference storageReference;
-//    DatabaseReference myref;
 
     public FriendsSearchAdapter(Context context, ArrayList<FriendsInfo> arrayList) {
         this.context = context;
@@ -43,7 +41,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
     }
 
     class SearchViewHolder extends RecyclerView.ViewHolder{
-
         CircleImageView Image;
         TextView Name,Email;
         LinearLayout ParentLayout;
@@ -62,6 +59,7 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
         View view = LayoutInflater.from(context).inflate(R.layout.searchfriends_layout,viewGroup,false);
         return new FriendsSearchAdapter.SearchViewHolder(view);
     }
+
     @Override
     public void onBindViewHolder(@NonNull final FriendsSearchAdapter.SearchViewHolder searchViewHolder, final int i) {
         searchViewHolder.Name.setText(arrayList.get(i).getName());
@@ -73,16 +71,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
         }
         final RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.defaultpic);
-//        storageReference = FirebaseStorage.getInstance().getReference();
-//        myref = FirebaseDatabase.getInstance().getReference("Users");
-
-//        storageReference.child("profilepics/"+arrayList.get(i).getProfilepic()+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//            @Override
-//            public void onSuccess(Uri uri) {
-//                Glide.with(context).setDefaultRequestOptions(requestOptions)
-//                        .asBitmap().load(uri).into(searchViewHolder.Image);
-//            }
-//        });
 
         searchViewHolder.ParentLayout.setOnClickListener(new View.OnClickListener() {
             @Override

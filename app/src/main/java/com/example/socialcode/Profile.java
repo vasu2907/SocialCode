@@ -64,9 +64,6 @@ public class Profile extends AppCompatActivity {
     private TextView logout,coderating,codefriends,codecontests;
     private String codeforcesrating,codeforcesfriends,codeforcescontests;
     private Intent intent;
-//    private StorageReference storageReference;
-//    private FirebaseAuth auth;
-//    private DatabaseReference myref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,13 +95,6 @@ public class Profile extends AppCompatActivity {
         coderating.setText(codeforcesrating);
         codefriends.setText(codeforcesfriends);
         codecontests.setText(codeforcescontests);
-
-
-
-
-//        storageReference = FirebaseStorage.getInstance().getReference();
-//        auth = FirebaseAuth.getInstance();
-//        myref = FirebaseDatabase.getInstance().getReference("Users");
         logout = (TextView) findViewById(R.id.navigation_logout);
 
         logout.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +113,6 @@ public class Profile extends AppCompatActivity {
                 editor.putString("college", "");
                 editor.putString("verified", "False");
                 editor.commit();
-//                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(),Login.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
@@ -146,7 +135,6 @@ public class Profile extends AppCompatActivity {
                 }
                 else if(id == R.id.navigation_searchfriend)
                 {
-                    Toast.makeText(getApplicationContext(),"Search Friend",Toast.LENGTH_LONG).show();
                     startActivity( new Intent(getApplicationContext(),SearchFriends.class));
                 }
                 else if(id == R.id.navigation_favourites)
@@ -178,49 +166,9 @@ public class Profile extends AppCompatActivity {
                 Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
                 profile_pic.setImageBitmap(bitmap_img);
             }
-            Toast.makeText(getApplicationContext(), "hbe", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-//        myref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-////                fetchdata process = new fetchdata();
-////
-////                process.execute();
-//                    coderating.setText(intent.getStringExtra("rating"));
-//                    codecontests.setText(intent.getStringExtra("contests"));
-//                    codefriends.setText(intent.getStringExtra("friends"));
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-
-//        try{
-//                storageReference.child("profilepics/"+auth.getCurrentUser().getUid()+".jpg")
-//                        .getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                    @Override
-//                    public void onSuccess(Uri uri) {
-//                        try{
-//                            Glide.with(getApplicationContext())
-//                                    .load(uri).into(pic);
-//                        }
-//                        catch (Exception e)
-//                        {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//        }catch (Exception e)
-//        {
-//            e.printStackTrace();
-//            return;
-//        }
     }
 
     @Override
@@ -228,65 +176,4 @@ public class Profile extends AppCompatActivity {
 
         return abdt.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
-
-//    private class fetchdata extends AsyncTask<Void,Void,String>{
-//        String res="";
-//
-//        public fetchdata() {
-//            super();
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//            try {
-//                JSONObject object = new JSONObject(s);
-//                String status = object.getString("status");
-//                if(status.equals("OK")){
-//                    JSONArray res = object.getJSONArray("result");
-//                    JSONObject mydata = (JSONObject) res.get(0);
-//                    rating = mydata.getString("rating");
-//                }
-//                else{
-//                    Toast.makeText(getApplicationContext(),object.getString("comment"),Toast.LENGTH_LONG).show();
-//                }
-//            } catch (JSONException e) {
-//                // Appropriate error handling code
-//            }
-//            coderating.setText(rating);
-//        }
-//
-//        @Override
-//        protected String doInBackground(Void... voids) {
-//            try {
-//                Log.d("ID=","####"+codeforces_id);
-//                URL url = new URL("http://codeforces.com/api/user.info?handles=+"+codeforces_id);
-//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//                try {
-//                    InputStream inputStream =urlConnection.getInputStream();
-//                    BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
-//                    String line="";
-//                    String res="";
-//                    while (line!=null) {
-//                        line = bufferedReader.readLine();
-//                        res = res+line;
-//                    }
-//                    bufferedReader.close();
-//                    return res;
-//                } finally {
-//                    urlConnection.disconnect();
-//                }
-//            } catch (Exception e) {
-//                Log.e("ERROR", e.getMessage(), e);
-//                return null;
-//            }
-//        }
-//    }
-
 }

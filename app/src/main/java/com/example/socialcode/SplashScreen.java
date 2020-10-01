@@ -47,10 +47,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SplashScreen extends AppCompatActivity {
 
-//    private FirebaseAuth auth;
-//    private DatabaseReference myref;
     private String codeforces;
-//    private FirebaseDatabase database;
     static int splashtime = 1500;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private String responseBody;
@@ -63,9 +60,6 @@ public class SplashScreen extends AppCompatActivity {
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         email = sharedPref.getString("email", "");
         password = sharedPref.getString("password", "");
-//        database = FirebaseDatabase.getInstance();
-//        myref = database.getReference("Users");
-//        auth = FirebaseAuth.getInstance();
         if (!email.isEmpty() && !password.isEmpty()) {
             Retrofit retrofit = new Retrofit.Builder()
                                     .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
@@ -132,43 +126,6 @@ public class SplashScreen extends AppCompatActivity {
                     finish();
                 }
             });
-//            auth.signInWithEmailAndPassword(user, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                @Override
-//                public void onComplete(@NonNull Task<AuthResult> task) {
-//                    if (task.isSuccessful()) {
-//                        myref.addValueEventListener(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                UserInfo userInfo = dataSnapshot.child(auth.getCurrentUser().getUid())
-//                                        .child("Info").getValue(UserInfo.class);
-////                                Toast.makeText(getApplicationContext(),"Database",Toast.LENGTH_SHORT).show();
-//                                codeforces = userInfo.getCodeforces();
-//                                Log.d("Database", codeforces);
-//                                fetchdata process = new fetchdata();
-//                                process.execute();
-//                            }
-//
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                            }
-//                        });
-////                        Log.d("DatabaseOut","$$"+codeforces);
-//
-//                    } else {
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Intent intent = new Intent(getApplicationContext(), Login.class);
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                startActivity(intent);
-//                                finish();
-//                            }
-//                        }, splashtime);
-//                    }
-//                }
-//            });
-
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -182,119 +139,3 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 }
-//    private class fetchdata extends AsyncTask<Void,Void,String> {
-//
-//        public fetchdata()
-//        {
-//            super();
-//
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//            Intent intent = new Intent(getApplicationContext(),Profile.class);
-////            intent.putExtra("rating",rating);
-////            intent.putExtra("friends",friends);
-////            intent.putExtra("contests",contests);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            finish();
-//        }
-//
-//        @Override
-//        protected String doInBackground(Void... voids) {
-//            try{
-//
-//
-//                //// THIS IS FOR CODEFORCES RATING AND FRIENDS
-//                Log.d("InsideBackgroundId","$$$"+this.codeforces);
-//                URL url = new URL("http://codeforces.com/api/user.info?handles="+this.codeforces+";");
-//                HttpURLConnection httpURLConnection =(HttpURLConnection)url.openConnection();
-//                InputStream inputStream =httpURLConnection.getInputStream();
-//                BufferedReader bufferedReader =new BufferedReader(new InputStreamReader(inputStream));
-//                String line ="";
-//                result = "";
-//                while (line!= null)
-//                {
-//                    line = bufferedReader.readLine();
-//                    result = result + line;
-//                }
-//                Log.d("Hey","$$$$"+result+"$$$");
-//                JSONObject jsonObject = new JSONObject(result);
-//                if(jsonObject.getString("status").equals("OK"))
-//                {
-////                    Toast.makeText(getApplicationContext(),"Valid",Toast.LENGTH_LONG).show();
-//                    Log.d("Valid","Jsonobject");
-//                    JSONArray temp = jsonObject.getJSONArray("result");
-//                    JSONObject c = temp.getJSONObject(0);
-//                     this.rating = c.getString("rating");
-//                     Log.d("Rating","$$$$"+this.rating);
-//                     friends = c.getString("friendOfCount");
-//                     Log.d("Friends","$$$"+friends);
-//                }
-//                else{
-//                    Log.d("Null hia kya","####");
-//                    return null;
-//                }
-//                ////THIS IS FOR CODEFORCES CONTESTS
-//                result = "";
-//                String spec;
-//                URL url1 = new URL("https://codeforces.com/api/user.rating?handle="+this.codeforces);
-//                HttpURLConnection httpURLConnection1 = (HttpsURLConnection) url1.openConnection();
-//                InputStream inputStream1 = httpURLConnection1.getInputStream();
-//                BufferedReader bufferedReader1 = new BufferedReader(new InputStreamReader(inputStream1));
-//                line = "";
-//                while (line!=null)
-//                {
-//                    line = bufferedReader1.readLine();
-//                    result = result + line;
-//                }
-//
-//                JSONObject jsonObject1 = new JSONObject(result);
-//                if(jsonObject1.getString("status").equals("OK"))
-//                {
-//                    JSONArray temp = jsonObject1.getJSONArray("result");
-//                    int l = temp.length();
-//                    contests = String.valueOf(l);
-//                }
-//                else
-//                {
-//                    return null;
-//                }
-//
-//            }catch(MalformedURLException e) {
-//                Log.d("MALFORMED",e.getMessage());
-//            }catch (IOException e){
-//                Log.d("IOEXCEPTION",e.getMessage());
-//            } catch (JSONException e) {
-//                Log.d("VGVtgc","jbtr");
-//                e.printStackTrace();
-//            }
-//            return null;
-
-//            try {
-//                URL url = new URL("http://codeforces.com/api/user.info?handles="+codeforces);
-//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//                try {
-//                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-//                    StringBuilder stringBuilder = new StringBuilder();
-//                    String line;
-//                    while ((line = bufferedReader.readLine()) != null) {
-//                        stringBuilder.append(line).append("\n");
-//                    }
-//                    bufferedReader.close();
-//                    return stringBuilder.toString();
-//                } finally {
-//                    urlConnection.disconnect();
-//                }
-//            } catch (Exception e) {
-//                Log.e("ERROR", e.getMessage(), e);
-//                return null;
-//            }
-//        }
-//    }

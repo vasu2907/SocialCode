@@ -22,7 +22,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     private StorageReference myref;
     private FirebaseAuth auth;
 
-
     public SearchAdapter(Context context, ArrayList<ContestsInfo> arrayList) {
         this.context = context;
         this.arrayList = arrayList;

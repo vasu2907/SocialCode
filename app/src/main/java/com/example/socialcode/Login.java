@@ -37,12 +37,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Login extends AppCompatActivity {
+
     private EditText username,password;
     private Button login;
     private Button signup;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private String responseBody;
-//    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,6 @@ public class Login extends AppCompatActivity {
         password = (EditText) findViewById(R.id.login_password);
         login = (Button) findViewById(R.id.login_loginbtn);
         signup = (Button) findViewById(R.id.login_signup);
-//        auth = FirebaseAuth.getInstance();
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,29 +166,5 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), responseBody, Toast.LENGTH_LONG).show();
             }
         });
-
-
-//        auth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if(task.isSuccessful())
-//                {
-//
-//                    SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
-//                    SharedPreferences.Editor editor =sharedPref.edit();
-//                    editor.putString("Email",email);
-//                    editor.putString("Password",pass);
-//                    editor.commit();
-//                    Intent intent = new Intent(getApplicationContext(),Profile.class);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                    finish();
-//                }
-//                else
-//                {
-//                    Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
     }
 }

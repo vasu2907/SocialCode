@@ -31,10 +31,10 @@ public class FriendProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_profile);
+
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String email = intent.getStringExtra("email");
-        Toast.makeText(getApplicationContext(), "email"+email, Toast.LENGTH_SHORT).show();
         getSupportActionBar().setTitle(name);
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -43,13 +43,16 @@ public class FriendProfile extends AppCompatActivity {
         else {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
+
         base64 = "";
         Rating = (TextView) findViewById(R.id.profile_codeforces_rating_num);
         Friends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         Contests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
         profilepic = (CircleImageView) findViewById(R.id.profile_profilepic);
+
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String src_email = sharedPref.getString("email", "");
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
                 .addConverterFactory(GsonConverterFactory.create())

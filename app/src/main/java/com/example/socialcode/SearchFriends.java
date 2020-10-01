@@ -37,8 +37,8 @@ public class SearchFriends extends AppCompatActivity {
     ImageView search_btn;
     JsonPlaceHolderApi jsonPlaceHolderApi;
     String res = "";
-//    private DatabaseReference myref;
     private FriendsSearchAdapter friendsSearchAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,14 +57,12 @@ public class SearchFriends extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),LinearLayoutManager.VERTICAL));
         arrayList = new ArrayList<>();
-//        myref = FirebaseDatabase.getInstance().getReference("Users");
         search_btn = (ImageView) findViewById(R.id.search_btn);
 
         search_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String keyword = searchbar.getText().toString().trim();
-                Toast.makeText(getApplicationContext(), "keyowrd:"+keyword, Toast.LENGTH_LONG).show();
                 if(keyword.equals("") == true){
                     Toast.makeText(getApplicationContext(), "No Users Found", Toast.LENGTH_SHORT).show();
                     return;
@@ -72,31 +70,6 @@ public class SearchFriends extends AppCompatActivity {
                 setAdapter(keyword);
             }
         });
-
-//        searchbar.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable st) {
-//                if(!st.toString().isEmpty())
-//                {
-//                    setAdapter(st.toString());
-//                }
-//                else
-//                {
-//                    arrayList.clear();
-//                }
-//            }
-//        });
-
     }
 
     private void setAdapter(String pattern){
@@ -116,6 +89,7 @@ public class SearchFriends extends AppCompatActivity {
                 }
                 SearchFriendAPIResponse postResponse = response.body();
                 ArrayList<HashMap<String, String>> payload = postResponse.getPayload();
+                arrayList.clear();
 
                 for(HashMap<String, String> obj: payload){
                     arrayList.add(new FriendsInfo(obj.get("name"),obj.get("email"), obj.get("base64"), ""));
@@ -134,47 +108,4 @@ public class SearchFriends extends AppCompatActivity {
             }
         });
     }
-
-//    private void setAdapter(final String searchstring)
-//    {
-//        myref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                arrayList.clear();
-//                int counter = 0;
-//                for( DataSnapshot snapshot : dataSnapshot.getChildren())
-//                {
-//                        String uid = snapshot.getKey();
-//                        UserInfo userInfo =snapshot.child("Info").getValue(UserInfo.class);
-//                        String profilepic = uid;
-//                        String name = userInfo.getName();
-//                        String email = userInfo.getEmail();
-//                        String codeforces_handle = userInfo.getCodeforces();
-//                        if(name.toLowerCase().contains(searchstring.toLowerCase()))
-//                        {
-//                            FriendsInfo friendsInfo = new FriendsInfo(name,email,profilepic,codeforces_handle);
-//                            arrayList.add(friendsInfo);
-//                            counter+=1;
-//                        }
-//                        else if(email.toLowerCase().contains(searchstring.toLowerCase()))
-//                        {
-//                            FriendsInfo friendsInfo = new FriendsInfo(name,email,profilepic,codeforces_handle);
-//                            arrayList.add(friendsInfo);
-//                            counter+=1;
-//                        }
-//                        if(counter == 10)
-//                            break;
-//                }
-//
-//                friendsSearchAdapter = new FriendsSearchAdapter(getApplicationContext(),arrayList);
-//                recyclerView.setAdapter(friendsSearchAdapter);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
-
 }
