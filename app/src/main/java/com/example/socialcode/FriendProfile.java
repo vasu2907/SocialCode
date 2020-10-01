@@ -3,13 +3,17 @@ package com.example.socialcode;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,6 +24,8 @@ public class FriendProfile extends AppCompatActivity {
 
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private TextView Rating, Friends, Contests;
+    private CircleImageView profilepic;
+    private String base64;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +35,7 @@ public class FriendProfile extends AppCompatActivity {
         String name = intent.getStringExtra("name");
         String email = intent.getStringExtra("email");
         Toast.makeText(getApplicationContext(), "email"+email, Toast.LENGTH_SHORT).show();
-//        getSupportActionBar().setTitle(name);
+        getSupportActionBar().setTitle(name);
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.setStatusBarColor(getColor(R.color.colorPrimary));
@@ -37,9 +43,11 @@ public class FriendProfile extends AppCompatActivity {
         else {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
+        base64 = "";
         Rating = (TextView) findViewById(R.id.profile_codeforces_rating_num);
         Friends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         Contests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
+        profilepic = (CircleImageView) findViewById(R.id.profile_profilepic);
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String src_email = sharedPref.getString("email", "");
         Retrofit retrofit = new Retrofit.Builder()
@@ -62,6 +70,12 @@ public class FriendProfile extends AppCompatActivity {
                 Rating.setText(postResponse.getCodeforces_rating());
                 Friends.setText(postResponse.getCodeforces_friends());
                 Contests.setText(postResponse.getCodeforces_contest());
+                base64 = postResponse.getBase64();
+                if(!base64.equals("")){
+                    byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    profilepic.setImageBitmap(decodedByte);
+                }
             }
 
             @Override

@@ -2,9 +2,12 @@ package com.example.socialcode;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdapter.SearchViewHolder> {
 
     Context context;
@@ -39,12 +44,12 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
 
     class SearchViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView Image;
+        CircleImageView Image;
         TextView Name,Email;
         LinearLayout ParentLayout;
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
-            Image = (ImageView) itemView.findViewById(R.id.friends_image);
+            Image = (CircleImageView) itemView.findViewById(R.id.friends_image);
             Name = (TextView) itemView.findViewById(R.id.friends_name);
             Email = (TextView) itemView.findViewById(R.id.friends_email);
             ParentLayout = (LinearLayout) itemView.findViewById(R.id.parent_layout);
@@ -61,6 +66,11 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
     public void onBindViewHolder(@NonNull final FriendsSearchAdapter.SearchViewHolder searchViewHolder, final int i) {
         searchViewHolder.Name.setText(arrayList.get(i).getName());
         searchViewHolder.Email.setText(arrayList.get(i).getEmail());
+        if(!arrayList.get(i).getProfilepic().equals("")){
+            byte[] decodedString = Base64.decode(arrayList.get(i).getProfilepic(), Base64.DEFAULT);
+            Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            searchViewHolder.Image.setImageBitmap(bitmap_img);
+        }
         final RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.defaultpic);
 //        storageReference = FirebaseStorage.getInstance().getReference();

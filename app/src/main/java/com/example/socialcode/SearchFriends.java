@@ -118,7 +118,7 @@ public class SearchFriends extends AppCompatActivity {
                 ArrayList<HashMap<String, String>> payload = postResponse.getPayload();
 
                 for(HashMap<String, String> obj: payload){
-                    arrayList.add(new FriendsInfo(obj.get("name"),obj.get("email"),"", ""));
+                    arrayList.add(new FriendsInfo(obj.get("name"),obj.get("email"), obj.get("base64"), ""));
                 }
                 if(arrayList.isEmpty() == true){
                     Toast.makeText(getApplicationContext(), "No Users Found", Toast.LENGTH_SHORT).show();
