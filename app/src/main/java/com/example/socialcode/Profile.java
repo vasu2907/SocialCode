@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kosalgeek.android.caching.FileCacheManager;
+import com.kosalgeek.android.caching.FileCacher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,16 +47,19 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Profile extends AppCompatActivity {
     private ImageView pic;
     private DrawerLayout dl;
+    private CircleImageView profile_pic;
     private ActionBarDrawerToggle abdt;
     private TextView logout,coderating,codefriends,codecontests;
     private String codeforcesrating,codeforcesfriends,codeforcescontests;
@@ -80,6 +88,7 @@ public class Profile extends AppCompatActivity {
         coderating = (TextView)findViewById(R.id.profile_codeforces_rating_num);
         codefriends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         codecontests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
+        profile_pic = (CircleImageView) findViewById(R.id.profile_profilepic);
         intent = getIntent();
 
         SharedPreferences sharedPref = getSharedPreferences("MyData",Context.MODE_PRIVATE);
@@ -91,6 +100,8 @@ public class Profile extends AppCompatActivity {
         codecontests.setText(codeforcescontests);
 
 
+
+
 //        storageReference = FirebaseStorage.getInstance().getReference();
 //        auth = FirebaseAuth.getInstance();
 //        myref = FirebaseDatabase.getInstance().getReference("Users");
@@ -99,6 +110,8 @@ public class Profile extends AppCompatActivity {
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FileCacheManager manager = new FileCacheManager(getApplicationContext());
+                manager.deleteAllCaches();
                 SharedPreferences sharedPref = getSharedPreferences("MyData",Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("email","");
@@ -156,6 +169,18 @@ public class Profile extends AppCompatActivity {
         coderating.setText(sharedPref.getString("codeforces_rating", "N/A"));
         codecontests.setText(sharedPref.getString("codeforces_contest", "N/A"));
         codefriends.setText(sharedPref.getString("codeforces_friends", "N/A"));
+        FileCacher<HashMap<String, String>> cacher = new FileCacher<>(getApplicationContext(), "user.txt");
+        HashMap<String, String> obj = null;
+        try {
+            obj = cacher.readCache();
+            byte[] decodeString = Base64.decode(obj.get("image"), Base64.DEFAULT);
+            Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+            profile_pic.setImageBitmap(bitmap_img);
+            Toast.makeText(getApplicationContext(), "hbe", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
 //        myref.addValueEventListener(new ValueEventListener() {
 //            @Override

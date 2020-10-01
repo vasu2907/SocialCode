@@ -24,6 +24,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.kosalgeek.android.caching.FileCacheManager;
+import com.kosalgeek.android.caching.FileCacher;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -122,6 +127,16 @@ public class Login extends AppCompatActivity {
                 LoginAPIResponse postResponse = response.body();
                 responseBody = postResponse.getMessage();
                 if(postResponse.getCredentials() == true) {
+                    FileCacheManager manager = new FileCacheManager(Login.this);
+                    manager.deleteAllCaches();
+                    FileCacher<HashMap<String, String>> cacher = new FileCacher<HashMap<String, String>>(Login.this, "user.txt");
+                    try{
+                        HashMap<String, String> obj = new HashMap<String, String>();
+                        obj.put("image", postResponse.getBase64());
+                        cacher.writeCache(obj);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor =sharedPref.edit();
                     editor.putString("email",email);

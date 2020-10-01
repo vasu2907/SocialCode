@@ -23,6 +23,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="19dp"
                 android:layout_weight="0.45"
+                android:tag="bg"
                 app:srcCompat="@drawable/updateprofile" />
 
 

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -12,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -38,7 +42,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kosalgeek.android.caching.FileCacher;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -74,6 +80,7 @@ public class UpdateProfile extends AppCompatActivity {
         else {
             window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
         }
+        Toast.makeText(getApplicationContext(), "ONCREATE", Toast.LENGTH_LONG).show();
         Name = (EditText) findViewById(R.id.updateprofile_name);
         College = (EditText) findViewById(R.id.updateprofile_college);
         Codechef = (EditText) findViewById(R.id.updateprofile_codechef);
@@ -85,8 +92,19 @@ public class UpdateProfile extends AppCompatActivity {
         retrieve_data = (ImageView) findViewById(R.id.retrieve_data);
         verified_user = (ImageView) findViewById(R.id.verify_user);
         User_verification_msg = (TextView) findViewById(R.id.verify_msg);
+
+        String base64 = getCachedImage();
+        if(!base64.equals("")){
+            byte[] decodeString = Base64.decode(base64, Base64.DEFAULT);
+            Bitmap bitmap_img = BitmapFactory.decodeByteArray(decodeString, 0, decodeString.length);
+            profilepic.setImageBitmap(bitmap_img);
+            profilepic.setTag("profilepic");
+            Toast.makeText(getApplicationContext(), "hbe", Toast.LENGTH_SHORT).show();
+        }
+
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String verified = sharedPref.getString("verified", "False");
+
         if(verified.equals("True") == true){
             verified_user.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.verified_user));
             User_verification_msg.setText("Verified");
@@ -110,6 +128,13 @@ public class UpdateProfile extends AppCompatActivity {
 //                                                Email.getText().toString(),Codeforces.getText().toString(),
 //                                                Codechef.getText().toString(),Hackerrank.getText().toString());
 //                myref.child(auth.getCurrentUser().getUid()).child("Info").setValue(newInfo);
+            }
+        });
+
+        profilepic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showImageChooser();
             }
         });
 
@@ -218,6 +243,46 @@ public class UpdateProfile extends AppCompatActivity {
         });
     }
 
+    private Boolean hasImage(@NonNull ImageView view){
+        if(String.valueOf(view.getTag()).equals("bg")){
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    private String getCachedImage(){
+        FileCacher<HashMap<String, String>> cacher = new FileCacher<>(getApplicationContext(), "user.txt");
+        HashMap<String, String> obj = null;
+        String base64 = "";
+        try {
+            obj = cacher.readCache();
+            base64 = obj.get("image");
+        } catch (IOException e) {
+            e.printStackTrace();
+            base64 = "";
+        }
+        return base64;
+    }
+
+    private void updateCache(@NonNull ImageView view){
+        if (!hasImage(view)){
+            return ;
+        }
+        FileCacher<HashMap<String, String>> cacher = new FileCacher<>(getApplicationContext(), "user.txt");
+        HashMap<String, String> obj = new HashMap<String, String>();
+        BitmapDrawable drawable = (BitmapDrawable) profilepic.getDrawable();
+        Bitmap bitmap_img = drawable.getBitmap();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap_img.compress(Bitmap.CompressFormat.JPEG, 60, byteArrayOutputStream);
+        String base64 = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+        obj.put("image", base64);
+        try {
+            cacher.writeCache(obj);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void saveUpdatedInfo(){
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String email = sharedPref.getString("email", "");
@@ -226,7 +291,17 @@ public class UpdateProfile extends AppCompatActivity {
         String codeforces = Codeforces.getText().toString();
         String hackerrank = Hackerrank.getText().toString();
         String college = College.getText().toString();
-        SaveProfileBody body = new SaveProfileBody(name, email, college, codechef, codeforces, hackerrank);
+        String base64 = "";
+        if(hasImage(profilepic)){
+            BitmapDrawable drawable = (BitmapDrawable) profilepic.getDrawable();
+            Bitmap bitmap_img = drawable.getBitmap();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap_img.compress(Bitmap.CompressFormat.JPEG, 60, byteArrayOutputStream);
+            base64 = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+        }
+//        Toast.makeText(getApplicationContext(), "image:"+hasImage(profilepic).toString(), Toast.LENGTH_SHORT).show();
+
+        SaveProfileBody body = new SaveProfileBody(name, email, college, codechef, codeforces, hackerrank, base64);
 
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -244,6 +319,7 @@ public class UpdateProfile extends AppCompatActivity {
                     return;
                 }
                 Toast.makeText(getApplicationContext(), "Data updated Successfully", Toast.LENGTH_SHORT).show();
+                updateCache(profilepic);
             }
 
             @Override
@@ -278,31 +354,28 @@ public class UpdateProfile extends AppCompatActivity {
 //        }
 //    }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-////        Toast.makeText(getApplicationContext(),"Hey Vasu",Toast.LENGTH_SHORT).show();
-//        if(requestCode == choose_Image && resultCode == RESULT_OK && data != null && data.getData() != null)
-//        {
-////            Toast.makeText(getApplicationContext(),"Hey Dhammi",Toast.LENGTH_SHORT).show();
-//
-//            uriprofileimage =data.getData();
-//            try {
-//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), uriprofileimage);
-//                profilepic.setImageBitmap(bitmap);
-//                uploadImagetoFirebase();
-//            }
-//            catch (IOException e)
-//            {
-//                    e.printStackTrace();
-//            }
-//        }
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == choose_Image && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            uriprofileimage =data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), uriprofileimage);
+                profilepic.setImageBitmap(bitmap);
+                profilepic.setTag("profilepic");
+//                Toast.makeText(getApplicationContext(), "fheb", Toast.LENGTH_SHORT).show();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
+//        Toast.makeText(getApplicationContext(), "ONSTART", Toast.LENGTH_LONG).show();
         Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
                                         .addConverterFactory(GsonConverterFactory.create())
@@ -383,13 +456,13 @@ public class UpdateProfile extends AppCompatActivity {
     }
 
 
-//    private void showImageChooser()
-//    {
-//            Intent intent=new Intent();
-//            intent.setType("image/*");
-//            intent.setAction(Intent.ACTION_GET_CONTENT);
-//            startActivityForResult(Intent.createChooser(intent,"Select Profile image"),choose_Image);
-//    }
+    private void showImageChooser()
+    {
+            Intent intent=new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,"Select Profile image"),choose_Image);
+    }
 
 //    private void uploadImagetoFirebase()
 //    {

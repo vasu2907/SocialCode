@@ -13,6 +13,12 @@ public class LoginAPIResponse {
     private Integer status;
     private Boolean credentials;
 
+    public String getBase64() {
+        return base64;
+    }
+
+    private String base64;
+
     public String getCollege() {
         return college;
     }
