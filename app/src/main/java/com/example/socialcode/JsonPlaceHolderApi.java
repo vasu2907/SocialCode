@@ -36,4 +36,7 @@ public interface JsonPlaceHolderApi {
 
     @POST("friend/profile")
     Call<FriendProfileAPIResponse> get_friend_info(@Body FriendProfileAPIBody friendProfileAPIBody);
+
+    @PUT("friend")
+    Call<RetrieveDataResponse> connect_req_handler(@Body ConnectionReqAPIBody connectionReqAPIBody);
 }

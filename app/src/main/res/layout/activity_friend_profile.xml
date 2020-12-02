@@ -32,6 +32,16 @@
             app:civ_border_width="5dp"
             app:civ_border_color="#1976d2"
             android:src="@drawable/defaultpic" />
+        <ImageView
+            android:id="@+id/add_friend"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="180dp"
+            android:src="@drawable/add_friend"
+            android:tag="add"
+            />
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"

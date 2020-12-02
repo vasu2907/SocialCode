@@ -6,10 +6,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +29,7 @@ public class FriendProfile extends AppCompatActivity {
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private TextView Rating, Friends, Contests;
     private CircleImageView profilepic;
+    private ImageView friend_icon;
     private String base64;
 
     @Override
@@ -34,7 +39,7 @@ public class FriendProfile extends AppCompatActivity {
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
-        String email = intent.getStringExtra("email");
+        final String email = intent.getStringExtra("email");
         getSupportActionBar().setTitle(name);
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -49,6 +54,14 @@ public class FriendProfile extends AppCompatActivity {
         Friends = (TextView) findViewById(R.id.profile_codeforces_friends_num);
         Contests = (TextView) findViewById(R.id.profile_codeforces_contest_num);
         profilepic = (CircleImageView) findViewById(R.id.profile_profilepic);
+        friend_icon = (ImageView) findViewById(R.id.add_friend);
+
+        friend_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add_friend(email);
+            }
+        });
 
         SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String src_email = sharedPref.getString("email", "");
@@ -73,6 +86,9 @@ public class FriendProfile extends AppCompatActivity {
                 Rating.setText(postResponse.getCodeforces_rating());
                 Friends.setText(postResponse.getCodeforces_friends());
                 Contests.setText(postResponse.getCodeforces_contest());
+                if(postResponse.getFriend()){
+                    friend_icon.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.friend));
+                }
                 base64 = postResponse.getBase64();
                 if(!base64.equals("")){
                     byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
@@ -85,6 +101,59 @@ public class FriendProfile extends AppCompatActivity {
             public void onFailure(Call<FriendProfileAPIResponse> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Internal Server Error", Toast.LENGTH_SHORT).show();
                 return;
+            }
+        });
+    }
+
+    private Boolean isFriend(@NonNull ImageView view){
+        if(view.getTag() == "friend"){
+            return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
+        }
+    }
+
+    private void add_friend(String dest){
+        SharedPreferences sharedPref = getSharedPreferences("MyData", Context.MODE_PRIVATE);
+        String src = sharedPref.getString("email", "");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        ConnectionReqAPIBody body = new ConnectionReqAPIBody(src, dest);
+        Call<RetrieveDataResponse> call = jsonPlaceHolderApi.connect_req_handler(body);
+        call.enqueue(new Callback<RetrieveDataResponse>() {
+            @Override
+            public void onResponse(Call<RetrieveDataResponse> call, Response<RetrieveDataResponse> response) {
+                if(!response.isSuccessful()){
+                    String msg = "";
+                    if(isFriend(friend_icon)){
+                        msg = "Failed to Unfriend";
+                    } else {
+                        msg = "Failed to add Friend";
+                    }
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(isFriend(friend_icon)){
+                    friend_icon.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.add_friend));
+                    friend_icon.setTag("add");
+                } else {
+                    friend_icon.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.friend));
+                    friend_icon.setTag("friend");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RetrieveDataResponse> call, Throwable t) {
+                String msg = "";
+                if(isFriend(friend_icon)){
+                    msg = "Failed to Unfriend";
+                } else {
+                    msg = "Failed to add Friend";
+                }
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
