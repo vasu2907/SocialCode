@@ -1,11 +1,13 @@
 package com.example.socialcode;
 
+import android.os.Build;
 import android.support.design.widget.TabItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.TableLayout;
 
 public class ProfileTab extends AppCompatActivity {
@@ -20,6 +22,14 @@ public class ProfileTab extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_tab);
+
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.setStatusBarColor(getColor(R.color.colorPrimary));
+        }
+        else {
+            window.setStatusBarColor(getResources().getColor(R.color.colorPrimary));
+        }
 
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tab1 = (TabItem) findViewById(R.id.tab1);

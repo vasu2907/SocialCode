@@ -13,6 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/colorPrimary"
+        app:tabTextColor="#FFFFFF"
+        app:tabIndicatorColor="#FFFFFF"
         tools:layout_editor_absoluteY="-3dp">
 
         <android.support.design.widget.TabItem
