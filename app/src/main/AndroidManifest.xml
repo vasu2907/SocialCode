@@ -12,8 +12,10 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FriendProfile"
-            android:parentActivityName=".SearchFriends"></activity>
+        <activity android:name=".ProfileTab"></activity>
+        <activity
+            android:name=".FriendProfile"
+            android:parentActivityName=".SearchFriends" />
         <activity
             android:name=".SearchFriends"
             android:parentActivityName=".Profile" />

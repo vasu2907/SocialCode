@@ -19,7 +19,7 @@
         android:icon="@drawable/searchfriend">
     </item>
     <item android:id="@+id/navigation_myfriends"
-        android:title=" "
+        android:title="Tab"
         >
     </item>
     <item android:id="@+id/navigation_favourites"

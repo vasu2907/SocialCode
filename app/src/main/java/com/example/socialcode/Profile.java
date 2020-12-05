@@ -143,6 +143,7 @@ public class Profile extends AppCompatActivity {
                 }
                 else if(id == R.id.navigation_myfriends)
                 {
+                    startActivity(new Intent(getApplicationContext(), ProfileTab.class));
                     Toast.makeText(getApplicationContext(),"My Friends",Toast.LENGTH_LONG).show();
                 }
                 return true;
