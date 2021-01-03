@@ -29,7 +29,6 @@
         <activity android:name=".Profile" />
         <activity android:name=".Login" />
         <activity android:name=".Register" />
-        <activity android:name=".MainActivity" />
         <activity
             android:name=".SplashScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
