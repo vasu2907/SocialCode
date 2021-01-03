@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FriendProfile"
+    android:background="#1976d2"
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="start"
-        android:backgroundTint="#1976d2"
-        android:background="@color/colorAccent">
+        >
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="175dp"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="2dp"
             android:layout_marginTop="-10dp"
             android:src="@drawable/coverpic" />
 
@@ -41,17 +40,6 @@
             android:layout_marginTop="180dp"
             android:src="@drawable/add_friend"
             android:tag="add"
-            />
-
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/profile_floatbtn"
-            android:layout_margin="30dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_code_black_24dp"
             />
 
         <ImageView
@@ -195,10 +183,8 @@
             android:id="@+id/profile_hackerrank_rating_num"
             android:layout_width="100dp"
             android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="2dp"
-            android:layout_marginBottom="260dp"
+            android:layout_marginTop="450dp"
             android:gravity="center"
             android:text="0"
             android:textSize="24sp"
@@ -208,10 +194,8 @@
             android:id="@+id/profile_hackerrank_friends_num"
             android:layout_width="130dp"
             android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="145dp"
-            android:layout_marginBottom="260dp"
+            android:layout_marginTop="450dp"
             android:gravity="center"
             android:text="0"
             android:textSize="24sp"
@@ -222,14 +206,26 @@
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginEnd="2dp"
-            android:layout_marginBottom="260dp"
+            android:layout_marginTop="450dp"
             android:gravity="center"
             android:text="0"
             android:textSize="24sp"
             android:textStyle="bold" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="480dp" />
+
+        </RelativeLayout>
+
     </RelativeLayout>
 
-</LinearLayout>
+</ScrollView>

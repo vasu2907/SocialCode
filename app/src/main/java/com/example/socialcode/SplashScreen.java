@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -84,10 +85,12 @@ public class SplashScreen extends AppCompatActivity {
                         FileCacheManager manager =  new FileCacheManager(getApplicationContext());
                         manager.deleteAllCaches();
                         FileCacher<HashMap<String, String>> cacher = new FileCacher<HashMap<String, String>>(getApplicationContext(), "user.txt");
+                        FileCacher<HashMap<String, ArrayList<String>>> problemsCacher = new FileCacher<HashMap<String, ArrayList<String>>>(getApplicationContext(), "problems.txt");
                         try{
                             HashMap<String, String> obj = new HashMap<String, String>();
                             obj.put("image", postResponse.getBase64());
                             cacher.writeCache(obj);
+                            problemsCacher.writeCache(postResponse.getProblems());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

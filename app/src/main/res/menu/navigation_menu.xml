@@ -18,12 +18,10 @@
         android:title="Search Friend"
         android:icon="@drawable/searchfriend">
     </item>
-    <item android:id="@+id/navigation_myfriends"
-        android:title="Tab"
+    <item android:id="@+id/navigation_problems"
+        android:title="Problems"
+        android:icon="@drawable/ic_question_answer_black_24dp"
         >
     </item>
-    <item android:id="@+id/navigation_favourites"
-        android:title=" "
-        >
-    </item>
+
 </menu>

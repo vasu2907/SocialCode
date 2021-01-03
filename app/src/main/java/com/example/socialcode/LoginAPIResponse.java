@@ -1,6 +1,12 @@
 package com.example.socialcode;
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LoginAPIResponse {
     private String codeforces_rating;
@@ -12,6 +18,11 @@ public class LoginAPIResponse {
     private String college;
     private Integer status;
     private Boolean credentials;
+    private HashMap<String, ArrayList<String>> problems;
+
+    public HashMap<String, ArrayList<String>> getProblems() {
+        return problems;
+    }
 
     public String getBase64() {
         return base64;

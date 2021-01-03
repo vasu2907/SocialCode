@@ -137,14 +137,9 @@ public class Profile extends AppCompatActivity {
                 {
                     startActivity( new Intent(getApplicationContext(),SearchFriends.class));
                 }
-                else if(id == R.id.navigation_favourites)
+                else if(id == R.id.navigation_problems)
                 {
-                    Toast.makeText(getApplicationContext(),"Favourites",Toast.LENGTH_LONG).show();
-                }
-                else if(id == R.id.navigation_myfriends)
-                {
-                    startActivity(new Intent(getApplicationContext(), ProfileTab.class));
-                    Toast.makeText(getApplicationContext(),"My Friends",Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(getApplicationContext(), Problems.class));
                 }
                 return true;
             }

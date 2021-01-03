@@ -27,7 +27,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.kosalgeek.android.caching.FileCacheManager;
 import com.kosalgeek.android.caching.FileCacher;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -126,14 +129,17 @@ public class Login extends AppCompatActivity {
                 }
                 LoginAPIResponse postResponse = response.body();
                 responseBody = postResponse.getMessage();
+                Toast.makeText(getApplicationContext(), "nbvye"+String.valueOf(postResponse.getProblems().size()), Toast.LENGTH_LONG).show();
                 if(postResponse.getCredentials() == true) {
                     FileCacheManager manager = new FileCacheManager(Login.this);
                     manager.deleteAllCaches();
                     FileCacher<HashMap<String, String>> cacher = new FileCacher<HashMap<String, String>>(Login.this, "user.txt");
+                    FileCacher<HashMap<String, ArrayList<String>>> problemsCacher = new FileCacher<HashMap<String, ArrayList<String>>>(Login.this, "problems.txt");
                     try{
                         HashMap<String, String> obj = new HashMap<String, String>();
                         obj.put("image", postResponse.getBase64());
                         cacher.writeCache(obj);
+                        problemsCacher.writeCache(postResponse.getProblems());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
