@@ -1,15 +1,35 @@
 package com.example.socialcode;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
@@ -25,6 +45,8 @@ public class Tab1 extends Fragment {
     private RecyclerView recyclerViewParent;
 
     ArrayList<ParentChild> parentChildObj;
+    JSONObject jsonObject;
+    JsonPlaceHolderApi jsonPlaceHolderApi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,82 +54,109 @@ public class Tab1 extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab1, container, false);
 
-        recyclerViewParent = (RecyclerView) view.findViewById(R.id.rv_parent);
 
-
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        manager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerViewParent.setLayoutManager(manager);
-        recyclerViewParent.setHasFixedSize(true);
-
-        ParentAdapter parentAdapter = new ParentAdapter(getContext(), createData());
-        recyclerViewParent.setAdapter(parentAdapter);
         return view;
     }
 
-    private ArrayList<ParentChild> createData() {
+    
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+
+        MyTask obj =  new MyTask(view);
+        obj.execute();
+//        parentChildObj = obj.get_object();
+
+
+
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Void>{
+        private View view;
+
+        public MyTask(View view) {
+            super();
+            this.view = view;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            recyclerViewParent = (RecyclerView) view.findViewById(R.id.rv_parent);
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            manager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerViewParent.setLayoutManager(manager);
+            recyclerViewParent.setHasFixedSize(true);
+
+//            ParentAdapter parentAdapter = new ParentAdapter(getContext(), parentChildObj);
+//            recyclerViewParent.setAdapter(parentAdapter);
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+            Call<JSONObject> call = jsonPlaceHolderApi.get_problems("vasu2907");
+            Response<JSONObject> response = null;
+            try {
+                response = call.execute();
+                jsonObject = response.body();
+                parentChildObj = createData(jsonObject);
+                ParentAdapter parentAdapter = new ParentAdapter(getContext(), parentChildObj);
+                recyclerViewParent.setAdapter(parentAdapter);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
+
+    private ArrayList<ParentChild> createData(JSONObject jsonObject) {
         parentChildObj = new ArrayList<>();
-        ArrayList<Child> list1 = new ArrayList<>();
-        ArrayList<Child> list2 = new ArrayList<>();
-        ArrayList<Child> list3 = new ArrayList<>();
-        ArrayList<Child> list4 = new ArrayList<>();
-        ArrayList<Child> list5 = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            Child c1 = new Child();
-            c1.setChild_name("Child 1." + (i + 1));
-            list1.add(c1);
+        if( jsonObject == null){
+            return parentChildObj;
         }
+        try{
 
-        for (int i = 0; i < 5; i++) {
-            Child c2 = new Child();
-            c2.setChild_name("Child 2." + (i + 1));
-            list2.add(c2);
+//            Retrofit retrofit = new Retrofit.Builder()
+//                    .baseUrl("https://msfspmx7o8.execute-api.ap-south-1.amazonaws.com/prod/")
+//                    .addConverterFactory(GsonConverterFactory.create())
+//                    .build();
+//            jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+//            Call<JSONObject> call = jsonPlaceHolderApi.get_problems("vasu2907");
+//            Response<JSONObject> response = call.execute();
+//            jsonObject = response.body();
+
+
+
+            for(int i = 0; i< jsonObject.names().length(); i++){
+                String category = jsonObject.names().getString(i);
+                JSONArray jsonArray = jsonObject.getJSONArray(category);
+                ParentChild object = new ParentChild();
+                ArrayList<Child> list = new ArrayList<>();
+                Child c = new Child();
+                c.setChild_name(category);
+                list.add(c);
+                for(int j=0;j<jsonArray.length();j++){
+                    Child ch = new Child();
+                    ch.setChild_name(jsonArray.getString(j));
+                    list.add(ch);
+                }
+                object.setChild(list);
+                parentChildObj.add(object);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-
-        for (int i = 0; i < 2; i++) {
-            Child c3 = new Child();
-            c3.setChild_name("Child 3." + (i + 1));
-            list3.add(c3);
-        }
-
-
-        for (int i = 0; i < 4; i++) {
-            Child c4 = new Child();
-            c4.setChild_name("Child 4." + (i + 1));
-            list4.add(c4);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            Child c5 = new Child();
-            c5.setChild_name("Child 5." + (i + 1));
-            list5.add(c5);
-        }
-
-
-        ParentChild pc1 = new ParentChild();
-        pc1.setChild(list1);
-        parentChildObj.add(pc1);
-
-        ParentChild pc2 = new ParentChild();
-        pc2.setChild(list2);
-        parentChildObj.add(pc2);
-
-
-        ParentChild pc3 = new ParentChild();
-        pc3.setChild(list3);
-        parentChildObj.add(pc3);
-
-        ParentChild pc4 = new ParentChild();
-        pc4.setChild(list4);
-        parentChildObj.add(pc4);
-
-        ParentChild pc5 = new ParentChild();
-        pc5.setChild(list5);
-        parentChildObj.add(pc5);
-
-
         return parentChildObj;
     }
 

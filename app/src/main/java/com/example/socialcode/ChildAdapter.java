@@ -77,8 +77,6 @@ public class ChildAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     };
 
 
-
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final ViewHolder vh = (ViewHolder) holder;
@@ -96,21 +94,7 @@ public class ChildAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }else{
             vh.tvExpandCollapseToggle.setVisibility(View.GONE);
 //            vh.tvChild.se(Color.WHITE);
-
-
         }
-
-//        if (position == 0 && getItemCount() == 1) {
-//            vh.tvExpandCollapseToggle.setImageResource(R.drawable.ic_expand_more_white_24dp);
-//            vh.tvExpandCollapseToggle.setVisibility(View.VISIBLE);
-//        } else if (position == childDataBk.size() - 1) {
-//            vh.tvExpandCollapseToggle.setImageResource(R.drawable.ic_expand_less_white_24dp);
-//            vh.tvExpandCollapseToggle.setVisibility(View.VISIBLE);
-//
-//
-//        } else {
-//            vh.tvExpandCollapseToggle.setVisibility(View.GONE);
-//        }
 
         Child c = childData.get(position);
         vh.tvChild.setText(c.getChild_name());

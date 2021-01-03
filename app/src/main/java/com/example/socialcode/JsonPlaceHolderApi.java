@@ -1,5 +1,7 @@
 package com.example.socialcode;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -39,4 +41,7 @@ public interface JsonPlaceHolderApi {
 
     @PUT("friend")
     Call<RetrieveDataResponse> connect_req_handler(@Body ConnectionReqAPIBody connectionReqAPIBody);
+
+    @POST("user/{id}/problems")
+    Call<JSONObject> get_problems(@Path("id") String handle);
 }

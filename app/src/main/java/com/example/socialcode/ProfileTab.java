@@ -7,8 +7,22 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.TableLayout;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileTab extends AppCompatActivity {
 
@@ -16,6 +30,8 @@ public class ProfileTab extends AppCompatActivity {
     private ViewPager viewPager;
     private TabItem tab1, tab2;
     public PageAdapter pagerAdapter;
+    private JSONObject data;
+    private JsonPlaceHolderApi jsonPlaceHolderApi;
 
 
     @Override
@@ -36,8 +52,11 @@ public class ProfileTab extends AppCompatActivity {
         tab2= (TabItem) findViewById(R.id.tab2);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        Log.d("datat is :", "####"+ data.toString());
         pagerAdapter = new PageAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
+        int limit = ((pagerAdapter.getCount() > 1)? pagerAdapter.getCount() - 1:1);
+        viewPager.setOffscreenPageLimit(limit);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -65,5 +84,10 @@ public class ProfileTab extends AppCompatActivity {
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
 
+    }
+
+
+    public JSONObject get_data(){
+        return data;
     }
 }

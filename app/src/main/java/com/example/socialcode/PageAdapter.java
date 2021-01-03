@@ -1,9 +1,15 @@
 package com.example.socialcode;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 public class PageAdapter extends FragmentPagerAdapter {
 
@@ -16,11 +22,15 @@ public class PageAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        Fragment fragment = null;
+
         switch (position){
             case 0:
-                return new Tab2();
+                fragment = new Tab2();
+                return fragment;
             case 1:
-                return new Tab1();
+                fragment = new Tab1();
+                return fragment;
             default:
                 return null;
 
