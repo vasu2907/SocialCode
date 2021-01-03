@@ -14,7 +14,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Problems"
                     android:parentActivityName=".Profile"/>
-        <activity android:name=".ProfileTab" />
         <activity
             android:name=".FriendProfile"
             android:parentActivityName=".SearchFriends" />
